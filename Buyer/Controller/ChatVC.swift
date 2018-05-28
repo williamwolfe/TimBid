@@ -21,7 +21,8 @@ class ChatVC: JSQMessagesViewController, MessageReceivedDelegate, UIImagePickerC
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        //UITabBarController.setValue(nil)
+        //self.tabBarController?.tabBar.isHidden = true
         picker.delegate = self;
         MessagesHandler.Instance.delegate = self;
         
@@ -38,10 +39,11 @@ class ChatVC: JSQMessagesViewController, MessageReceivedDelegate, UIImagePickerC
         MessagesHandler.Instance.observeMessages();
         MessagesHandler.Instance.observeMediaMessages();
         
-        
     }
     
-   
+    func viewDidDisappear() {
+        //self.tabBarController?.tabBar.isHidden = false
+    }
     
     //COLLECTION VIEW FUNCTIONS
     

@@ -10,10 +10,13 @@ import UIKit
 
 class Sale: UITableViewCell {
 
-    @IBOutlet weak var myImage: UIImageView!
+   
     @IBOutlet weak var myAmount: UILabel!
     @IBOutlet weak var myLabel: UILabel!
     @IBOutlet weak var myDate: UILabel!
+    
+    
+    @IBOutlet weak var Rating: UILabel!
     
     @IBOutlet weak var star1: UIButton!
     @IBOutlet weak var star2: UIButton!

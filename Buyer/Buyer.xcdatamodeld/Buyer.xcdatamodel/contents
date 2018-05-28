@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17D102" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14133" systemVersion="17E199" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="item_description" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="item_price" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,7 +8,24 @@
         <attribute name="seller_identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="SellerBid" representedClassName="SellerBid" syncable="YES" codeGenerationType="class">
+        <attribute name="buyer_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="buyer_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="item_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="min_price" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="seller_id" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SellerItem" representedClassName="SellerItem" syncable="YES" codeGenerationType="class">
+        <attribute name="buyer_identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="item_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="item_price" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="post_date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="purchase_date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
     <elements>
         <element name="Item" positionX="-63" positionY="-18" width="128" height="135"/>
+        <element name="SellerItem" positionX="-63" positionY="27" width="128" height="120"/>
+        <element name="SellerBid" positionX="-63" positionY="45" width="128" height="135"/>
     </elements>
 </model>

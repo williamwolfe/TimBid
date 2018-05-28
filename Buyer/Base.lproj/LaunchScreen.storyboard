@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,8 +25,8 @@
                                     <constraint firstAttribute="height" constant="140" id="lxe-Sw-fTj"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Buyer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fra-dW-14w">
-                                <rect key="frame" x="125" y="323" width="124" height="28"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Buy - Sell" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fra-dW-14w">
+                                <rect key="frame" x="16" y="323" width="343" height="28"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="23"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -34,10 +35,10 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="1Af-Qs-kVC" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="73" id="Bm8-x7-UUw"/>
-                            <constraint firstItem="fra-dW-14w" firstAttribute="centerX" secondItem="1Af-Qs-kVC" secondAttribute="centerX" id="Eoy-Ru-gwf"/>
-                            <constraint firstItem="fra-dW-14w" firstAttribute="top" secondItem="1Af-Qs-kVC" secondAttribute="bottom" constant="90" id="LYI-AX-ptl"/>
                             <constraint firstItem="1Af-Qs-kVC" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="RNI-kV-17r"/>
-                            <constraint firstItem="fra-dW-14w" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="125" id="Uac-Va-6uU"/>
+                            <constraint firstItem="fra-dW-14w" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="Tuv-T8-0Ji"/>
+                            <constraint firstItem="fra-dW-14w" firstAttribute="top" secondItem="1Af-Qs-kVC" secondAttribute="bottom" constant="90" id="WBJ-FF-pFc"/>
+                            <constraint firstItem="fra-dW-14w" firstAttribute="centerX" secondItem="1Af-Qs-kVC" secondAttribute="centerX" id="j05-Oq-OKL"/>
                             <constraint firstAttribute="trailing" secondItem="1Af-Qs-kVC" secondAttribute="trailing" id="s2z-MQ-VSR"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

@@ -18,6 +18,17 @@
 		762BBB171FB5FAD100E89F6C /* DBProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762BBB161FB5FAD100E89F6C /* DBProvider.swift */; };
 		762BBB1D1FB7520300E89F6C /* AuctionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762BBB1C1FB7520300E89F6C /* AuctionHandler.swift */; };
 		76332D6F1FED813D00864430 /* ChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76332D6E1FED813D00864430 /* ChatVC.swift */; };
+		76370CF5209A015A00CB0C1D /* SellerMapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76370CF4209A015A00CB0C1D /* SellerMapVC.swift */; };
+		766FB682209160100066C96A /* SellerBidList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766FB681209160100066C96A /* SellerBidList.swift */; };
+		766FB684209160C30066C96A /* SellerBidCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766FB683209160C30066C96A /* SellerBidCell.swift */; };
+		7671E736209547C500D31A4C /* MyMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7671E735209547C500D31A4C /* MyMapViewController.swift */; };
+		76910C9A208BB7650026DCF6 /* Seller_AuctionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76910C99208BB7650026DCF6 /* Seller_AuctionHandler.swift */; };
+		76924E54209006E200CD45A7 /* SellerTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76924E53209006E200CD45A7 /* SellerTableVC.swift */; };
+		76924E562090088500CD45A7 /* SellerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76924E552090088500CD45A7 /* SellerTableViewCell.swift */; };
+		769CD7A920935F660092E02E /* Seller_MessagesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CD7A820935F660092E02E /* Seller_MessagesHandler.swift */; };
+		769CD7AB209360FE0092E02E /* Seller_Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769CD7AA209360FE0092E02E /* Seller_Chat.swift */; };
+		76A08840208BAB6200147EAE /* SellerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A0883F208BAB6100147EAE /* SellerVC.swift */; };
+		76A1561320AA9330006C3018 /* BuyerStateVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A1561220AA9330006C3018 /* BuyerStateVariables.swift */; };
 		76C179172063413400E8546D /* Sale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C179162063413400E8546D /* Sale.swift */; };
 		76C179192063458400E8546D /* SaleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C179182063458400E8546D /* SaleVC.swift */; };
 		76D83F6F1FB36C7300D2E61E /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D83F6E1FB36C7300D2E61E /* AuthProvider.swift */; };
@@ -44,6 +55,18 @@
 		762BBB161FB5FAD100E89F6C /* DBProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBProvider.swift; sourceTree = "<group>"; };
 		762BBB1C1FB7520300E89F6C /* AuctionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuctionHandler.swift; sourceTree = "<group>"; };
 		76332D6E1FED813D00864430 /* ChatVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatVC.swift; sourceTree = "<group>"; };
+		76370CF4209A015A00CB0C1D /* SellerMapVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerMapVC.swift; sourceTree = "<group>"; };
+		76421CB620B3AA0D00A05853 /* Buyer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Buyer.entitlements; sourceTree = "<group>"; };
+		766FB681209160100066C96A /* SellerBidList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerBidList.swift; sourceTree = "<group>"; };
+		766FB683209160C30066C96A /* SellerBidCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerBidCell.swift; sourceTree = "<group>"; };
+		7671E735209547C500D31A4C /* MyMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMapViewController.swift; sourceTree = "<group>"; };
+		76910C99208BB7650026DCF6 /* Seller_AuctionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Seller_AuctionHandler.swift; sourceTree = "<group>"; };
+		76924E53209006E200CD45A7 /* SellerTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerTableVC.swift; sourceTree = "<group>"; };
+		76924E552090088500CD45A7 /* SellerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerTableViewCell.swift; sourceTree = "<group>"; };
+		769CD7A820935F660092E02E /* Seller_MessagesHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Seller_MessagesHandler.swift; sourceTree = "<group>"; };
+		769CD7AA209360FE0092E02E /* Seller_Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Seller_Chat.swift; sourceTree = "<group>"; };
+		76A0883F208BAB6100147EAE /* SellerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerVC.swift; sourceTree = "<group>"; };
+		76A1561220AA9330006C3018 /* BuyerStateVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyerStateVariables.swift; sourceTree = "<group>"; };
 		76C179162063413400E8546D /* Sale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sale.swift; sourceTree = "<group>"; };
 		76C179182063458400E8546D /* SaleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaleVC.swift; sourceTree = "<group>"; };
 		76D83F6E1FB36C7300D2E61E /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
@@ -104,6 +127,7 @@
 		761864F61FB346A700161BF9 /* Buyer */ = {
 			isa = PBXGroup;
 			children = (
+				76421CB620B3AA0D00A05853 /* Buyer.entitlements */,
 				76D83F6D1FB36BF600D2E61E /* PlugIns */,
 				76F613F91FB352EE004DF8E6 /* Controller */,
 				76F613F81FB352E7004DF8E6 /* View */,
@@ -128,6 +152,9 @@
 				762BBB1C1FB7520300E89F6C /* AuctionHandler.swift */,
 				7621F00B1FEDA5D200629541 /* MessagesHandler.swift */,
 				761ACCD720379A2B00C4DC0D /* PayHandler.swift */,
+				76910C99208BB7650026DCF6 /* Seller_AuctionHandler.swift */,
+				769CD7A820935F660092E02E /* Seller_MessagesHandler.swift */,
+				76A1561220AA9330006C3018 /* BuyerStateVariables.swift */,
 			);
 			path = PlugIns;
 			sourceTree = "<group>";
@@ -155,6 +182,14 @@
 				76F663D01FFADE6300B16689 /* PayVC.swift */,
 				76C179162063413400E8546D /* Sale.swift */,
 				76C179182063458400E8546D /* SaleVC.swift */,
+				76A0883F208BAB6100147EAE /* SellerVC.swift */,
+				76924E53209006E200CD45A7 /* SellerTableVC.swift */,
+				76924E552090088500CD45A7 /* SellerTableViewCell.swift */,
+				766FB681209160100066C96A /* SellerBidList.swift */,
+				766FB683209160C30066C96A /* SellerBidCell.swift */,
+				769CD7AA209360FE0092E02E /* Seller_Chat.swift */,
+				7671E735209547C500D31A4C /* MyMapViewController.swift */,
+				76370CF4209A015A00CB0C1D /* SellerMapVC.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -195,6 +230,11 @@
 					761864F31FB346A700161BF9 = {
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -238,6 +278,10 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Buyer/Pods-Buyer-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKShareKit/FBSDKShareKit.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/JSQMessagesViewController/JSQMessagesViewController.framework",
@@ -249,6 +293,10 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKShareKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSQMessagesViewController.framework",
@@ -303,19 +351,30 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				766FB684209160C30066C96A /* SellerBidCell.swift in Sources */,
+				76A1561320AA9330006C3018 /* BuyerStateVariables.swift in Sources */,
 				76332D6F1FED813D00864430 /* ChatVC.swift in Sources */,
+				76370CF5209A015A00CB0C1D /* SellerMapVC.swift in Sources */,
 				762BBB1D1FB7520300E89F6C /* AuctionHandler.swift in Sources */,
+				7671E736209547C500D31A4C /* MyMapViewController.swift in Sources */,
 				76C179172063413400E8546D /* Sale.swift in Sources */,
 				7621F00C1FEDA5D200629541 /* MessagesHandler.swift in Sources */,
+				76924E54209006E200CD45A7 /* SellerTableVC.swift in Sources */,
+				766FB682209160100066C96A /* SellerBidList.swift in Sources */,
 				761865001FB346A700161BF9 /* Buyer.xcdatamodeld in Sources */,
 				76C179192063458400E8546D /* SaleVC.swift in Sources */,
 				76F663D11FFADE6300B16689 /* PayVC.swift in Sources */,
 				761864F81FB346A700161BF9 /* AppDelegate.swift in Sources */,
 				76D83F741FB38C8E00D2E61E /* BuyerVC.swift in Sources */,
+				769CD7A920935F660092E02E /* Seller_MessagesHandler.swift in Sources */,
 				761ACCD820379A2B00C4DC0D /* PayHandler.swift in Sources */,
 				762BBB171FB5FAD100E89F6C /* DBProvider.swift in Sources */,
+				76924E562090088500CD45A7 /* SellerTableViewCell.swift in Sources */,
 				76D83F6F1FB36C7300D2E61E /* AuthProvider.swift in Sources */,
+				76A08840208BAB6200147EAE /* SellerVC.swift in Sources */,
+				76910C9A208BB7650026DCF6 /* Seller_AuctionHandler.swift in Sources */,
 				76F613FB1FB3530B004DF8E6 /* SignInVC.swift in Sources */,
+				769CD7AB209360FE0092E02E /* Seller_Chat.swift in Sources */,
 				762BBB151FB5FA6A00E89F6C /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -454,6 +513,7 @@
 			baseConfigurationReference = 879F92EE7908FD75D257BC5F /* Pods-Buyer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Buyer/Buyer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5T9GS4JNRR;
 				INFOPLIST_FILE = Buyer/Info.plist;
@@ -471,6 +531,7 @@
 			baseConfigurationReference = 6776546C080BAEF1F19B2C4B /* Pods-Buyer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Buyer/Buyer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5T9GS4JNRR;
 				INFOPLIST_FILE = Buyer/Info.plist;

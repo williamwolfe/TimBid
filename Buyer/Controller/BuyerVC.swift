@@ -23,30 +23,25 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     
     private var timer = Timer();
     
-    private var acceptedAuction = false;
-    private var buyerCanceledAuction = false;
-    private var canChat = false;
-    private var canPay = false;
-    
-    private let CHAT_SEGUE = "ChatSegue";
-    private let PAY_SEGUE = "PaySegue";
+    private var acceptedAuction         = false;
+    private var buyerCanceledAuction    = false;
+    private var canChat                 = false;
+    private var canPay                  = false;
     
     private var delta = 0.01;
+    //Here are some values for how delta will make to km or ft:
     //.0005 --> 0.1 km = 328  ft
     //.0010 --> 0.2 km = 656  ft
     //.0050 --> 1.0 km = 3280 ft
     //.0100 --> 2.0 km
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        //self.tabBarController?.tabBar.isHidden = false
         
         //chatBttnOutlet.layer.cornerRadius = 4
         //acceptAuctionBtn.layer.cornerRadius = 4
         //payBttnOutlet.layer.cornerRadius = 4
-        
-        
         
         chatBttnOutlet.backgroundColor = UIColor.jsq_messageBubbleBlue()
         chatBttnOutlet.layer.cornerRadius = chatBttnOutlet.frame.height/2
@@ -70,10 +65,32 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         payBttnOutlet.layer.shadowOffset = CGSize(width: 0, height: 0)
         
         initializeLocationManager();
+        myMap.showsUserLocation = true
+
         AuctionHandler.Instance.delegate = self;
+        
         //AuctionHandler.Instance.observeMessagesForBuyer();
         chatBttnOutlet.isHidden = true;
         payBttnOutlet.isHidden = true;
+        
+        printBuyerVariables()
+        
+    }
+    
+    func printBuyerVariables() {
+        
+        print("BuyerVC: buyer = \(AuctionHandler.Instance.buyer)")
+        print("BuyerVC: buyer_id = \(AuctionHandler.Instance.buyer_id)")
+        print("BuyerVC: seller = \(AuctionHandler.Instance.seller)")
+        print("BuyerVC: seller_id = \(AuctionHandler.Instance.seller_id)")
+        print("BuyerVC: auction_key = \(AuctionHandler.Instance.auction_key)")
+        print("BuyerVC: request_accepted_id = \(AuctionHandler.Instance.request_accepted_id)")
+        print("BuyerVC: accepted_by = \(AuctionHandler.Instance.accepted_by)")
+        print("BuyerVC: min_price = \(AuctionHandler.Instance.min_price)")
+        print("BuyerVC: min_price_cents = \(AuctionHandler.Instance.min_price_cents)")
+        print("BuyerVC: item_description = \(AuctionHandler.Instance.item_description)")
+        print("BuyerVC: amount_paid = \(AuctionHandler.Instance.amount_paid)")
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -81,13 +98,13 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         AuctionHandler.Instance.observeMessagesForBuyer();
     }
     
-    
+    /*
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        DBProvider.Instance.dbRef.removeAllObservers()
+        //DBProvider.Instance.dbRef.removeAllObservers()
     }
- 
+ */
     
     private func initializeLocationManager() {
         locationManager.delegate = self;
@@ -111,6 +128,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
             myMap.removeAnnotations(myMap.annotations);
             
             if sellerLocation != nil {
+                print("insider buyer VC, seller location is not nil")
                 if acceptedAuction {
                     let sellerAnnotation = MKPointAnnotation();
                     sellerAnnotation.coordinate = sellerLocation!;
@@ -130,45 +148,39 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     }
 
     @IBAction func logout(_ sender: Any) {
+        if acceptedAuction {
+            acceptAuctionBtn.isHidden = true;
+            AuctionHandler.Instance.cancelAuctionForBuyer();
+            MessagesHandler.Instance.cancelChat();
+            timer.invalidate();
+        }
         if AuthProvider.Instance.logOut() {
-            
-            if acceptedAuction {
-                acceptAuctionBtn.isHidden = true;
-                AuctionHandler.Instance.cancelAuctionForBuyer();
-                MessagesHandler.Instance.cancelChat();
-                timer.invalidate();
-            }
-            
-            
             dismiss(animated: true, completion: nil);
-            
         } else {
             // problem with logging out
             alertTheUser(title: "Could Not Logout", message: "We could not logout at the moment, please try again later");
-
         }
     }
     
+    
     func checkProximity(lat: Double, long: Double, description: String, min_price: String) {
+
         if nearby(lat: lat, long: long) && !acceptedAuction
         {
-            let min_price_int = Int(min_price)!/100
-            addRecordToItem()
-            print("right before acceptreject alert")
             
+            addRecordToItem()
             presentAcceptRejectOption(
                     title:          "Auction Request",
-                    message:        "Item Up For Sale, Description:\(description), Min Price: $\(min_price_int)");
-            
-            print("right after acceptreject alert")
+                    message:        "Item Up For Sale, Description:\(description), Min Price: $\(Int(min_price)!/100)");
         } else
         {
             rejectAuction()
         }
     }
+ 
     
     func nearby(lat: Double, long: Double) -> Bool {
-        //delta is a global variable
+        //"delta" is a global variable
         if userLocation != nil {
             if  (lat  <= self.userLocation!.latitude + delta)   && (lat  >= self.userLocation!.latitude - delta)
                 &&
@@ -185,20 +197,62 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         }
     }
     
+    private func presentAcceptRejectOption(title: String, message: String) {
+        
+        let alert = UIAlertController(
+            title:      title,
+            message:    message,
+            preferredStyle: .alert);
+        
+        let accept = UIAlertAction(
+            title: "Accept",
+            style: .default,
+            handler: { (alertAction: UIAlertAction) in
+                AuctionHandler.Instance.seller = AuctionHandler.Instance.temp_seller
+                self.acceptedAuction = true;
+                self.acceptAuctionBtn.isHidden = false;
+                self.timer = Timer.scheduledTimer(timeInterval: TimeInterval(10), target: self, selector: #selector(BuyerVC.updateBuyersLocation), userInfo: nil, repeats: true);
+                
+                AuctionHandler.Instance.auctionAccepted(
+                    lat:    Double(self.userLocation!.latitude),
+                    long:   Double(self.userLocation!.longitude)); //creates a new Request_Accepted child (autoID)
+        });
+        
+        let reject = UIAlertAction(
+            title: "Reject",
+            style: .default,
+            handler: { (alertAction: UIAlertAction) in
+                
+                self.rejectAuction()
+        });
+        
+        alert.addAction(accept);
+        alert.addAction(reject);
+        //rootViewController?.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
+        
+    }
+    
     func sellerCanceledAuction() {
         if !buyerCanceledAuction {
             AuctionHandler.Instance.cancelAuctionForBuyer(); //removes requestAccepted (buyer_id) item from DB
             self.acceptedAuction = false;
             self.acceptAuctionBtn.isHidden = true;
+           
             if AuctionHandler.Instance.seller != "" {
-    
-                alertTheUser(
-                    title:          "Auction Canceled",
-                    message:        "\(AuctionHandler.Instance.seller) Has Canceled The Auction"
-                    );
+                alertTheUser( title: "Auction Canceled", message: "\(AuctionHandler.Instance.seller) Has Canceled The Auction");
             }
+            BuyerStateVariables.Instance.resetVariables();
+            
             AuctionHandler.Instance.seller = "";
+            AuctionHandler.Instance.seller_id = "";
+            AuctionHandler.Instance.auction_key = "";
             AuctionHandler.Instance.amount_paid = "";
+            AuctionHandler.Instance.min_price_cents = "";
+            AuctionHandler.Instance.min_price = "";
+            AuctionHandler.Instance.item_description = "";
+            AuctionHandler.Instance.request_accepted_id = "";
+            
         }
         //added this line after lots of testing.
         //the symptom was that the requestAccepted was not being deleted when the seller canceled.
@@ -209,13 +263,28 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     func auctionCanceled() {
         rejectAuction()
         buyerCanceledAuction = false;
-        AuctionHandler.Instance.amount_paid = ""
         timer.invalidate();
+    }
+    
+    private func rejectAuction() {
+        self.acceptedAuction = false
+        self.acceptAuctionBtn.isHidden = true;
+        
+        AuctionHandler.Instance.amount_paid = ""
+        AuctionHandler.Instance.seller = "";
+        AuctionHandler.Instance.seller_id = "";
+        AuctionHandler.Instance.min_price_cents = "";
+        AuctionHandler.Instance.min_price = "";
+        AuctionHandler.Instance.item_description = "";
+        
+        AuctionHandler.Instance.request_accepted_id = "";
+        AuctionHandler.Instance.inAuction = false
     }
     
     func updateSellersLocation(lat: Double, long: Double) {
         sellerLocation = CLLocationCoordinate2D(latitude: lat, longitude: long);
-        print("(updating sellers location) seller =\(AuctionHandler.Instance.seller) ")
+        
+        print("inside BuyerVC: (updating sellers location) seller =\(AuctionHandler.Instance.seller) ")
     }
     
     @objc func updateBuyersLocation() {
@@ -232,60 +301,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         }
     }
     
-    private func presentAcceptRejectOption(title: String, message: String) {
-
-        
-        let alert = UIAlertController(
-            title:      title,
-            message:    message,
-            preferredStyle: .alert);
-        
-        /*
-        var rootViewController = UIApplication.shared.keyWindow?.rootViewController
-        
-        if let navigationController = rootViewController as? UINavigationController {
-            rootViewController = navigationController.viewControllers.first
-        }
-        
-        if let tabBarController = rootViewController as? UITabBarController {
-            rootViewController = tabBarController.selectedViewController
-        }
-        */
-        
-        let accept = UIAlertAction(
-            title: "Accept",
-            style: .default,
-            handler: { (alertAction: UIAlertAction) in
-                print("in the accept section of the alert")
-                AuctionHandler.Instance.seller = AuctionHandler.Instance.temp_seller
-                self.acceptedAuction = true;
-                self.acceptAuctionBtn.isHidden = false;
-                self.timer = Timer.scheduledTimer(timeInterval: TimeInterval(10), target: self, selector: #selector(BuyerVC.updateBuyersLocation), userInfo: nil, repeats: true);
-                
-                AuctionHandler.Instance.auctionAccepted(
-                    lat:    Double(self.userLocation!.latitude),
-                    long:   Double(self.userLocation!.longitude)); //creates a new Auction_Accepted child (autoID)
-            });
-        
-        let reject = UIAlertAction(
-            title: "Reject",
-            style: .default,
-            handler: { (alertAction: UIAlertAction) in
-                
-                self.rejectAuction()
-            });
-            
-        alert.addAction(accept);
-        alert.addAction(reject);
-        //rootViewController?.present(alert, animated: true, completion: nil)
-        present(alert, animated: true, completion: nil)
-        
-        
-    }
     
-    @IBAction func startChat(_ sender: Any) {
-        performSegue(withIdentifier: CHAT_SEGUE, sender: nil)
-    }
     
     internal func enableChat() {
         chatBttnOutlet.isHidden = false;
@@ -295,10 +311,15 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         chatBttnOutlet.isHidden = true;
     }
     
-    
+    /*
     @IBAction func pay(_ sender: Any) {
         performSegue(withIdentifier: PAY_SEGUE, sender: nil)
-    }
+    }*/
+    /*
+    @IBAction func backButton(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }*/
+    
     
     internal func enablePay() {
         payBttnOutlet.isHidden = false;
@@ -306,12 +327,6 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     
     internal func disablePay() {
         payBttnOutlet.isHidden = true;
-    }
-    
-    private func rejectAuction() {
-        self.acceptedAuction = false
-        self.acceptAuctionBtn.isHidden = true;
-        AuctionHandler.Instance.seller = "";
     }
     
     func addRecordToItem() {
@@ -339,4 +354,6 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         alert.addAction(ok);
         present(alert, animated: true, completion: nil);
     }
+    
+
 }

@@ -13,14 +13,16 @@ import CoreData
 class SaleVC: UITableViewController {
     
     var offerings_list = [NSManagedObject]()
-
+    
     @IBOutlet var myTableView: UITableView!
     
     @IBAction func deleteAll(_ sender: Any) {
         confirmDeleteAllSales()
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        myTableView.rowHeight = 95
 
     }
     
@@ -55,7 +57,7 @@ class SaleVC: UITableViewController {
         }
         catch
         {
-            print("error in ViewWillAppear, TableVC")
+            print("error in Buyer: SaleVC ViewWillAppear, TableVC")
         }
     }
     
@@ -96,49 +98,76 @@ class SaleVC: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Sale", for: indexPath) as! Sale
-
-        cell.myImage.image = UIImage(named: "sell.png")
+        
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = UIColor.green
+        cell.selectedBackgroundView = backgroundView
         
         //item description
         let x = offerings_list[indexPath.row]
+        
         cell.myLabel?.text = x.value(forKey: "item_description") as? String
         
         //item price
-        let a = offerings_list[indexPath.row]
-        print ("xxxxx a = \(a)")
-        let aInt = a.value(forKey: "item_price") as! String
-        print ("xxxxx aInt = \(aInt)")
-        
+        //let a = offerings_list[indexPath.row]
+        let aInt = x.value(forKey: "item_price") as! String
         var amount:Int? = Int(aInt)
-        print("xxxxx amount = \(String(describing: amount))")
-        //seems to be an error coming from this line:
         amount = amount!/100
         
         let seller_id = x.value(forKey: "seller_identifier")
         
-        let shorter_seller_id  = String(describing: seller_id!).prefix(6)
-        cell.myAmount.text = "$" + String(amount!) + " " + shorter_seller_id
+        cell.myAmount.text = "$" + String(amount!)
         
         // item post date
-        let d = offerings_list[indexPath.row]
-        cell.myDate?.text = String(String(describing: d.value(forKey: "post_date")!).prefix(19))
+        //let d = offerings_list[indexPath.row]
+        cell.myDate?.text = String(String(describing: x.value(forKey: "post_date")!).prefix(19))
        
-        //generate ratings stars:
-        let n_stars = Int(arc4random_uniform(5))
-        print("number of stars = \(n_stars)")
-        
-        
-        let star_array: [UIButton] = [cell.star1, cell.star2, cell.star3, cell.star4, cell.star5]
-        var i = 0;
-        while i < n_stars {
-            print("i = \(i)")
-            star_array[i].setImage(#imageLiteral(resourceName: "star_dark_20x20"), for: .normal)
+        ///////get rating and number of ratings for this seller_id:
+        var currentRating = ""
+        var nRatings = 1
+        DBProvider.Instance.sellersRef.child(seller_id as! String).child("data").observeSingleEvent(of: .value, with: { (snapshot) in
+                let value = snapshot.value as? NSDictionary
+                if(value?["rating"] != nil) {
+                    currentRating = value?["rating"] as? String ?? ""
+                } else {
+                    currentRating = "4"
+                }
             
-            i = i + 1
-        }
+                if (value?["nRatings"]) != nil {
+                    nRatings = value?["nRatings"] as! Int
+                } else {
+                    nRatings = 1
+                }
+        
+                let star_array: [UIButton] = [cell.star1, cell.star2, cell.star3, cell.star4, cell.star5]
+            
+                var i = 0;
+                while i < 5 {
+                    print("i = \(i)")
+                    star_array[i].setImage(#imageLiteral(resourceName: "star_clear_20x20"), for: .normal)
+                    i = i + 1
+                }
+            
+                if let currentRatingFloat = Float(currentRating) {
+                    let currentRatingTwoDecimals = (currentRatingFloat * 100).rounded() / 100
+                    cell.Rating?.text = String(currentRatingTwoDecimals) + " (" + String(nRatings) + ")"
+                    let currentRatingRounded = currentRatingFloat.rounded()
+                    let currentRatingInt = Int(currentRatingRounded)
+                    let n_stars = currentRatingInt
+                    i = 0;
+                    while i < n_stars {
+                        print("i = \(i)")
+                        star_array[i].setImage(#imageLiteral(resourceName: "star_dark_20x20"), for: .normal)
+                        i = i + 1
+                    }
+                } else {
+                    print("could not convert current rating to a float")
+                }
+            
+        }) { (error) in print(error.localizedDescription) }
+       
         return cell
     }
     
@@ -176,11 +205,99 @@ class SaleVC: UITableViewController {
                 self.submitBid(x: item_description!, y: item_price!, z: seller_identifier!, index: indexPath.row)
         });
         
+        let enter_rating = UIAlertAction(
+            title: "Rate This Seller",
+            style: .default,
+            handler: { (alertAction: UIAlertAction) in
+                print("Adding a rating for this seller \(seller_identifier!)")
+                self.rateThisSeller(thisSellerID: seller_identifier!)
+                
+        });
+        
         alert.addAction(accept);
         alert.addAction(put_up_for_sale);
+        alert.addAction(enter_rating);
         alert.addAction(cancel);
         present(alert, animated: true, completion: nil);
         
+        
+    }
+    
+    func rateThisSeller(thisSellerID: String) {
+        var currentRating = ""
+        var nRatings = 1
+        
+        print("inside the rateThisSeller function, thisSellerID = \(thisSellerID)")
+        //use thisSellerID to get the current average rating and number of ratings.
+        //then pop up a request for the new rating: 1 - 5
+        //then compute the new average rating
+        //then update the seller record in Firebase
+        
+        DBProvider.Instance.sellersRef.child(thisSellerID).child("data").observeSingleEvent(of: .value, with: { (snapshot) in
+            let value = snapshot.value as? NSDictionary
+            if(value?["rating"] != nil) {
+                currentRating = value?["rating"] as? String ?? ""
+            } else {
+                currentRating = "4"
+            }
+    
+            if (value?["nRatings"]) != nil {
+                nRatings = value?["nRatings"] as! Int
+            } else {
+                nRatings = 1
+            }
+        
+        }) { (error) in print(error.localizedDescription) }
+        
+        //Now need a pop up to get the new rating.
+        //1. Create the alert controller.
+        let alert = UIAlertController(title: "Submit Rating", message: "Please enter a rating (1-5) for this Seller", preferredStyle: .alert)
+        //2. Add the text field.
+        alert.addTextField { (textField) in textField.text = "rating (1-5)" }
+        alert.addAction(UIAlertAction(title: "Enter Rating", style: .default, handler: {
+            [weak alert] (_) in
+            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+            //let newRating = Int((textField?.text)!)
+            if (self.validateInput(x: (textField?.text)!)) {
+                let newRating = Int((textField?.text)!)
+                let updateRating = (Double(nRatings) * Double(currentRating)! + Double(newRating!) )/(Double(nRatings) + 1)
+                let updateNRatings = nRatings + 1
+    
+                DBProvider.Instance.sellersRef.child(thisSellerID).child("data").updateChildValues(["rating": String(updateRating)])
+                DBProvider.Instance.sellersRef.child(thisSellerID).child("data").updateChildValues(["nRatings": updateNRatings])
+                
+            } else {
+                print("input value could not be validated as between 1 and 5")
+                self.alertTheUser(title: "Ratings Input Error", message: "Rating must be an integer from 1 to 5")
+            }
+        }))
+        
+        let cancel = UIAlertAction(
+            title: "Cancel",
+            style: .default,
+            handler: { (alertAction: UIAlertAction) in
+                print("canceled the rating entry")
+        });
+        
+        alert.addAction(cancel);
+        
+        // 4. Present the alert.
+        self.present(alert, animated: true, completion: nil)
+        
+        
+        
+    }
+    
+    func validateInput(x: String) -> Bool {
+        if let intValue = Int(x) {
+            if (intValue >= 1 && intValue <= 5) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
     }
     
     func deleteRowFromItem(x: String, index: Int) {
@@ -211,24 +328,19 @@ class SaleVC: UITableViewController {
     }
     
     func submitBid(x: String, y: String, z: String, index: Int) {
-        print("trying to submit bid on item: \(x) at index \(index)")
-        //AuctionHandler.Instance.item_description = x
-        //AuctionHandler.Instance.min_price_cents = y
-        //AuctionHandler.Instance.seller_id = z
+
         //set these variables as local variables, to avoid collision with auction handler values
         let bid_item_description = x
         var bid_min_price_cents = y
         let bid_seller_id = z
 
         //1. Create the alert controller.
-        let alert = UIAlertController(title: "Submit Bid", message: "Item \(bid_item_description)", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Submit Bid", message: "Item: \(bid_item_description), current price = $\(Int(y)!/100)", preferredStyle: .alert)
         
         //2. Add the text field.
-        alert.addTextField { (textField) in
-            textField.text = "bid amount (in dollars)"
-        }
+        alert.addTextField { (textField) in textField.text = "amount (dollars)" }
         
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+        alert.addAction(UIAlertAction(title: "Bid on this Item", style: .default, handler: { [weak alert] (_) in
             let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
             print("Text field: \(String(describing: textField?.text))")
             if self.isStringAnInt(string: (textField?.text)!) {
@@ -263,12 +375,18 @@ class SaleVC: UITableViewController {
                  ];
             
             DBProvider.Instance.bidRef.childByAutoId().setValue(data);
-            
-            
         }))
         
+        let cancel = UIAlertAction(
+            title: "Cancel",
+            style: .default,
+            handler: { (alertAction: UIAlertAction) in
+                print("canceled the delete all")
+        });
+        
+        alert.addAction(cancel);
+        
         // 4. Present the alert.
-        //self.present(alert, animated: true, completion: nil)
         self.present(alert, animated: true, completion: nil)
         
         

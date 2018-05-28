@@ -25,6 +25,10 @@ class DBProvider {
         return dbRef.child(Constants.BUYERS);
     }
     
+    var sellersRef: DatabaseReference {
+        return dbRef.child(Constants.SELLERS);
+    }
+    
     var requestRef: DatabaseReference {
         return dbRef.child(Constants.AUCTION_REQUEST);
     }
@@ -66,13 +70,15 @@ class DBProvider {
     }
     
     
-    func saveUser(withID: String, email: String, password: String, rating: String) {
+    func saveUser(withID: String, email: String, password: String, rating: String, nRatings: Int) {
         let data: Dictionary<String, Any> =
             [Constants.EMAIL: email,
              Constants.PASSWORD: password,
              Constants.isSeller: false,
-             Constants.RATING: rating];
-        buyersRef.child(withID).child(Constants.DATA).setValue(data);
+             Constants.RATING: rating,
+             Constants.N_RATINGS: 1];
+         buyersRef.child(withID).child(Constants.DATA).setValue(data);
+        sellersRef.child(withID).child(Constants.DATA).setValue(data);
     }
     
 } // class

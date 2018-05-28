@@ -16,11 +16,11 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
     var paymentCardTextField: STPPaymentCardTextField! = nil
     var submitButton: UIButton! = nil
     
-    @IBOutlet weak var backBttnOutlet: UIButton!
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        backBttnOutlet.layer.cornerRadius = 4
+
         print("inside PayVC: auction handler min price = \(AuctionHandler.Instance.min_price)")
         if(AuctionHandler.Instance.amount_paid != "") {
             var amountPaid:Int? = Int(AuctionHandler.Instance.min_price)
@@ -38,12 +38,12 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
         
         PayHandler.Instance.delegate = self;
        
-        paymentCardTextField = STPPaymentCardTextField(frame: CGRect(x: 15, y: 30, width: view.frame.width - 30, height: 44))
+        paymentCardTextField = STPPaymentCardTextField(frame: CGRect(x: 15, y: 100, width: view.frame.width - 30, height: 44))
         paymentCardTextField.delegate = self
         view.addSubview(paymentCardTextField)
         
         submitButton = UIButton(type: .system)
-        submitButton.frame = CGRect(x: 15, y: 100, width: 100, height: 44)
+        submitButton.frame = CGRect(x: 15, y: 150, width: 100, height: 44)
         submitButton.isEnabled = false
         submitButton.setTitle("Submit", for: [])
         submitButton.addTarget(self, action: #selector(self.submitCard(_:)), for: .touchUpInside)
@@ -135,10 +135,7 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
 
     @IBOutlet weak var payment: UILabel!
     
-    @IBAction func backBtn(_ sender: Any) {
-        
-        dismiss(animated: true, completion: nil)
-    }
+   
     
     private func alertTheUser(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert);

@@ -12,6 +12,9 @@ pod ‘Firebase/Auth’
 pod ‘Firebase/Database’
 pod ‘JSQMessagesViewController’
 pod ‘SDWebImage’
-pod 'Stripe'
+pod ‘Stripe’
+pod ‘FBSDKCoreKit’
+pod ‘FBSDKShareKit’
+pod ‘FBSDKLoginKit’
 
 end

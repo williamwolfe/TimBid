@@ -8,6 +8,7 @@
 
 import Foundation
 import FirebaseAuth
+import FBSDKLoginKit
 
 typealias LoginHandler = (_ msg: String?) -> Void;
 
@@ -22,14 +23,13 @@ struct LoginErrorCode {
 
 class AuthProvider {
     private static let _instance = AuthProvider();
-    
     var user_id: String = ""
-    
     static var Instance: AuthProvider {
         return _instance;
     }
     
     func login(withEmail: String, password: String, loginHandler: LoginHandler?) {
+        
         
         Auth.auth().signIn(withEmail: withEmail, password: password, completion: { (user, error) in
             
@@ -39,8 +39,8 @@ class AuthProvider {
                 self.user_id = user!.uid;
                 loginHandler?(nil);
                 let userID = self.userID()
-                print("Buyer userID inside login = \(userID)")
                 AuctionHandler.Instance.buyer_id = userID;
+                Seller_AuctionHandler.Instance.seller_id = userID;
             }
             
         });
@@ -60,7 +60,7 @@ class AuthProvider {
                     AuctionHandler.Instance.buyer_id = self.user_id
                     
                     // store the user to database
-                    DBProvider.Instance.saveUser(withID: user!.uid, email: withEmail, password: password, rating: "4");
+                    DBProvider.Instance.saveUser(withID: user!.uid, email: withEmail, password: password, rating: "4", nRatings: 1);
                     
                     // login the user
                     self.login(withEmail: withEmail, password: password, loginHandler: loginHandler);

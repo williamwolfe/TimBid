@@ -11,6 +11,7 @@ class Constants {
     
     // DBProvider
     static let BUYERS = "buyers"
+    static let SELLERS = "sellers"
     static let EMAIL = "email"
     static let PASSWORD = "password"
     static let DATA = "data"
@@ -18,6 +19,8 @@ class Constants {
     static let AUCTION_REQUEST = "Auction_Request"
     static let AUCTION_ACCEPTED = "Auction_Accepted"
     static let RATING = "rating"
+    static let N_RATINGS = "nRatings"
+    
     static let ACCEPTED_BY = "accepted_by"
     static let BUYER_ID = "buyer_id"
     static let SELLER_ID = "seller_id"
@@ -31,6 +34,7 @@ class Constants {
     static let MIN_PRICE = "min_price"
     static let DESCRIPTION = "description"
     static let SELLER = "seller"
+    
     
     //For Stripe:
     static let STRIPE_CUSTOMERS = "stripe_customers"
