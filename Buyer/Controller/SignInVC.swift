@@ -40,7 +40,7 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
         
         let loginButton = FBSDKLoginButton()
         view.addSubview(loginButton)
-        loginButton.frame = CGRect(x: 16, y: 400, width: view.frame.width - 32, height: 28)
+        loginButton.frame = CGRect(x: 54, y: 400, width: view.frame.width - 108, height: 36)
         
         loginButton.delegate = self
         loginButton.readPermissions = ["email", "public_profile"]
@@ -78,7 +78,6 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
             return
         }
         print("successfully logged in with FB")
-        
         showEmailAddress()
     }
     
@@ -96,18 +95,12 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
                 return
             }
             print("successfully logged in with our user", user ?? "")
-            //print("user email = \(String(describing: user?.email))")
             print("user email = \(user?.email! ?? "")")
-            
             AuctionHandler.Instance.buyer = (user?.email)!
             Seller_AuctionHandler.Instance.seller = (user?.email)!
-            
             AuctionHandler.Instance.buyer_id = (user?.uid)!
             Seller_AuctionHandler.Instance.seller_id = (user?.uid)!
-            
-            DBProvider.Instance.saveUser(withID: user!.uid, email: (user?.email)!, password: "", rating: "4", nRatings: 1);
-    
-                
+            DBProvider.Instance.saveUser(withID: user!.uid, email: (user?.email)!, password: "", rating: "4", nRatings: 1, name: (user?.displayName)!, profileImageUrl: "" );
             self.performSegue(withIdentifier: self.TabBarSegue, sender: nil);
             })
          
@@ -119,7 +112,6 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
                 return
             }
             print("hello",result ?? "")
-        
             //self.performSegue(withIdentifier: self.TabBarSegue, sender: nil);
         }
         print("got here 123")
@@ -130,23 +122,17 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
         
         if emailTextField.text != "" && passwordTextField.text != "" {
             
-            AuthProvider.Instance.login(withEmail: emailTextField.text!,
-                                        password: passwordTextField.text!,
-                                        loginHandler: { (message) in
-                                            if message != nil {
-                                                self.alertTheUser(title: "Problem With Authentication", message: message!);
-                                            } else {
-                                                AuctionHandler.Instance.buyer = self.emailTextField.text!;
-                                                Seller_AuctionHandler.Instance.seller = self.emailTextField.text!;
-                                                
-                                                BuyerStateVariables.Instance.buyer = self.emailTextField.text!;
-                                                
-                                                self.emailTextField.text = "";
-                                                self.passwordTextField.text = "";
-                                                //self.performSegue(withIdentifier: self.BUYER_SEGUE, sender: nil);
-                                                //self.performSegue(withIdentifier: self.BUYER_SELLER_SEGUE, sender: nil);
-                                                self.performSegue(withIdentifier: self.TabBarSegue, sender: nil);
-                                            }
+            AuthProvider.Instance.login(withEmail: emailTextField.text!, password: passwordTextField.text!, loginHandler: { (message) in
+                        if message != nil {
+                            self.alertTheUser(title: "Problem With Authentication", message: message!);
+                        } else {
+                            AuctionHandler.Instance.buyer = self.emailTextField.text!;
+                            Seller_AuctionHandler.Instance.seller = self.emailTextField.text!;
+                            BuyerStateVariables.Instance.buyer = self.emailTextField.text!;
+                            self.emailTextField.text = "";
+                            self.passwordTextField.text = "";
+                            self.performSegue(withIdentifier: self.TabBarSegue, sender: nil);
+                        }
                                             
             });
             
@@ -160,25 +146,21 @@ class SignInVC: UIViewController, FBSDKLoginButtonDelegate {
     @IBAction func signUp(_ sender: Any) {
         
         if emailTextField.text != "" && passwordTextField.text != "" {
-            
-            AuthProvider.Instance.signUp(withEmail: emailTextField.text!,
-                                         password: passwordTextField.text!,
-                                         loginHandler: { (message) in
+            /*
+            AuthProvider.Instance.signUp(withEmail: emailTextField.text!, password: passwordTextField.text!, name: "hello",  loginHandler: { (message) in
                 
-                if message != nil {
-                    self.alertTheUser(title: "Problem With Creating A New User", message: message!);
-                } else {
-                    AuctionHandler.Instance.buyer = self.emailTextField.text!;
-                    Seller_AuctionHandler.Instance.seller = self.emailTextField.text!;
-                    self.emailTextField.text = "";
-                    self.passwordTextField.text = "";
-                    //self.performSegue(withIdentifier: self.BUYER_SEGUE, sender: nil)
-                    //self.performSegue(withIdentifier: self.BUYER_SELLER_SEGUE, sender: nil)
-                    self.performSegue(withIdentifier: self.TabBarSegue, sender: nil);
-                }
+                    if message != nil {
+                        self.alertTheUser(title: "Problem With Creating A New User", message: message!);
+                    } else {
+                        AuctionHandler.Instance.buyer = self.emailTextField.text!;
+                        Seller_AuctionHandler.Instance.seller = self.emailTextField.text!;
+                        self.emailTextField.text = "";
+                        self.passwordTextField.text = "";
+                        self.performSegue(withIdentifier: self.TabBarSegue, sender: nil);
+                    }
                 
             });
-            
+            */
         } else {
             alertTheUser(title: "Email And Password Are Required",
                          message: "Please enter email and password in the text fields");

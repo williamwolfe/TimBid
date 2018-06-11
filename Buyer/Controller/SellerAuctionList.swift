@@ -1,16 +1,17 @@
 //
-//  SellerTableVC.swift
+//  SellerAuctionList.swift
+//  Buyer
 //
-//
-//  Created by William J. Wolfe on 3/13/18.
+//  Created by William J. Wolfe on 6/4/18.
 //  Copyright © 2018 William J. Wolfe. All rights reserved.
 //
 
 import UIKit
 import CoreData
-//
-class SellerTableVC:   UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
+
+
+class SellerAuctionList: UITableViewController {
+
     var item_description = ""
     var item_price = ""
     var post_date = ""
@@ -27,23 +28,23 @@ class SellerTableVC:   UIViewController, UITableViewDataSource, UITableViewDeleg
     @IBOutlet weak var myTableView: UITableView!
     
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return offerings_list.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! SellerTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! SellerAuctionCell
         
         let backgroundView = UIView()
-        backgroundView.backgroundColor = UIColor.green
+        backgroundView.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
         cell.selectedBackgroundView = backgroundView
         
         //cell.myImage.image = UIImage(named: "sell.png")
-        cell.myImage.image = UIImage(named: "sell.png")
+        //cell.myImage.image = UIImage(named: "sell.png")
         
         //item description
         let x = offerings_list[indexPath.row]
-        cell.myLabel?.text = x.value(forKey: "item_description") as? String
+        cell.myDescription?.text = x.value(forKey: "item_description") as? String
         
         //item price
         //let a = offerings_list[indexPath.row]
@@ -61,9 +62,9 @@ class SellerTableVC:   UIViewController, UITableViewDataSource, UITableViewDeleg
         
         return cell
     }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        return 90.0;//Choose your custom row height
+        return 95.0;//Choose your custom row height
     }
     
     
@@ -99,7 +100,7 @@ class SellerTableVC:   UIViewController, UITableViewDataSource, UITableViewDeleg
         }
         catch
         {
-            print("error in ViewWillAppear, TableVC")
+            print("error in ViewWillAppear, SellerAuctionList")
         }
     }
     
@@ -136,7 +137,7 @@ class SellerTableVC:   UIViewController, UITableViewDataSource, UITableViewDeleg
         
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
         
         let item_description = offerings_list[indexPath.row].value(forKey: "item_description") as? String
         let item_price = offerings_list[indexPath.row].value(forKey: "item_price") as? String
@@ -243,6 +244,4 @@ class SellerTableVC:   UIViewController, UITableViewDataSource, UITableViewDeleg
         alert.addAction(cancel);
         present(alert, animated: true, completion: nil);
     }
-    
-    
 }

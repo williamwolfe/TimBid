@@ -26,11 +26,12 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
             var amountPaid:Int? = Int(AuctionHandler.Instance.min_price)
             amountPaid = amountPaid!/100
             payment.text = "Paid $\(amountPaid!) Thank You!"
+            payment2.text = "Show this to the Seller to confirm the payment."
         } else {
             if  AuctionHandler.Instance.min_price != "" {
                 payment.text = "Pay: $\(Int(AuctionHandler.Instance.min_price)!/100)"
+                payment2.text = ""
             } else {
-                print("there is no min_price for the payment amount")
                 payment.text = "Sorry, no amount to pay, try again"
             }
             
@@ -124,7 +125,8 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
             title: "Payment",
             message: "Buyer \(buyer) has paid $\(amountPaid!)")
         submitButton.isEnabled = false
-        payment.text = "Paid $\(amountPaid!) Thank You!"
+        payment.text = "Paid $\(amountPaid!) - Thank You!"
+        payment2.text = "Show this to the Seller to confirm payment."
         //payBttnOutlet.isHidden = true
     }
     
@@ -135,7 +137,7 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
 
     @IBOutlet weak var payment: UILabel!
     
-   
+    @IBOutlet weak var payment2: UILabel!
     
     private func alertTheUser(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert);

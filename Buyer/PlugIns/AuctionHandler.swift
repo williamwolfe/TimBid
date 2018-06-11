@@ -31,6 +31,7 @@ class AuctionHandler {
     var temp_seller = "";
     var buyer = "";
     var buyer_id = "";
+    var name = "";
    
     var min_price = "";
     var min_price_cents = ""

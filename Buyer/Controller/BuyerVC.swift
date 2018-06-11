@@ -9,9 +9,13 @@
 import UIKit
 import MapKit
 import CoreData
+import Firebase
+import FirebaseAuth
+
 
 class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, AuctionController {
 
+    @IBOutlet weak var BuyerModeText: UITextView!
     @IBOutlet weak var acceptAuctionBtn: UIButton!
     @IBOutlet weak var chatBttnOutlet: UIButton!
     @IBOutlet weak var payBttnOutlet: UIButton!
@@ -28,6 +32,10 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     private var canChat                 = false;
     private var canPay                  = false;
     
+    private var  buyer_mode_text = "Welcome to the BUYER MODE of the TIMBid  App!  You can bid on items by clicking on the VIEW AUCTIONS button.  You will be notified if the seller accepts your bid.  Then you will see the seller's location on the MAP, a CHAT option will be enabled, a PAY button will facilitate payment, and a CANCEL button will allow you to cancel at any time.  To sell an item, switch to the SELLER MODE by clicking the icon on the bottom tab bar"
+    
+    private var buyer_mode_in_auction_text = "You are currently participating in an Active Auction: hit CHAT to connect with the Seller, and hit PAY to complete the transaction.  Hit CANCEL to cancel this auction"
+    
     private var delta = 0.01;
     //Here are some values for how delta will make to km or ft:
     //.0005 --> 0.1 km = 328  ft
@@ -43,22 +51,27 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         //acceptAuctionBtn.layer.cornerRadius = 4
         //payBttnOutlet.layer.cornerRadius = 4
         
-        chatBttnOutlet.backgroundColor = UIColor.jsq_messageBubbleBlue()
-        chatBttnOutlet.layer.cornerRadius = chatBttnOutlet.frame.height/2
+        //chatBttnOutlet.backgroundColor = UIColor.jsq_messageBubbleBlue()
+        //chatBttnOutlet.backgroundColor = UIColor(red: 80/255, green: 161/255, blue: 101/255, alpha: 1)
+        chatBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
+        //chatBttnOutlet.layer.cornerRadius = chatBttnOutlet.frame.height/2
         chatBttnOutlet.layer.shadowColor = UIColor.darkGray.cgColor
         chatBttnOutlet.layer.shadowRadius = 4
         chatBttnOutlet.layer.shadowOpacity = 0.5
         chatBttnOutlet.layer.shadowOffset = CGSize(width: 0, height: 0)
         
-        acceptAuctionBtn.backgroundColor = UIColor.jsq_messageBubbleRed()
-        acceptAuctionBtn.layer.cornerRadius = acceptAuctionBtn.frame.height/2
+        //acceptAuctionBtn.backgroundColor = UIColor(red: 80/255, green: 161/255, blue: 101/255, alpha: 1)
+        acceptAuctionBtn.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
+        //acceptAuctionBtn.layer.cornerRadius = acceptAuctionBtn.frame.height/2
         acceptAuctionBtn.layer.shadowColor = UIColor.darkGray.cgColor
         acceptAuctionBtn.layer.shadowRadius = 4
         acceptAuctionBtn.layer.shadowOpacity = 0.5
         acceptAuctionBtn.layer.shadowOffset = CGSize(width: 0, height: 0)
+        //acceptAuctionBtn.setTitleColor(UIColor(red: 200/255, green: 20/255, blue: 20/255, alpha: 1), for: .normal)
         
-        payBttnOutlet.backgroundColor = UIColor.jsq_messageBubbleGreen()
-        payBttnOutlet.layer.cornerRadius = payBttnOutlet.frame.height/2
+        //payBttnOutlet.backgroundColor = UIColor(red: 80/255, green: 161/255, blue: 101/255, alpha: 1)
+        payBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
+        //payBttnOutlet.layer.cornerRadius = payBttnOutlet.frame.height/2
         payBttnOutlet.layer.shadowColor = UIColor.darkGray.cgColor
         payBttnOutlet.layer.shadowRadius = 4
         payBttnOutlet.layer.shadowOpacity = 0.5
@@ -73,9 +86,14 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         chatBttnOutlet.isHidden = true;
         payBttnOutlet.isHidden = true;
         
+       
+        BuyerModeText.text = buyer_mode_text
+        
         printBuyerVariables()
         
     }
+    
+    
     
     func printBuyerVariables() {
         
@@ -96,6 +114,13 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         AuctionHandler.Instance.observeMessagesForBuyer();
+        self.title = ""
+        if (AuctionHandler.Instance.name != "") {
+            self.title = AuctionHandler.Instance.name
+        } else  {
+            self.title = "TIMBid Buyer"
+        }
+        
     }
     
     /*
@@ -211,6 +236,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
                 AuctionHandler.Instance.seller = AuctionHandler.Instance.temp_seller
                 self.acceptedAuction = true;
                 self.acceptAuctionBtn.isHidden = false;
+                self.BuyerModeText.text = self.buyer_mode_in_auction_text
                 self.timer = Timer.scheduledTimer(timeInterval: TimeInterval(10), target: self, selector: #selector(BuyerVC.updateBuyersLocation), userInfo: nil, repeats: true);
                 
                 AuctionHandler.Instance.auctionAccepted(
@@ -279,6 +305,8 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         
         AuctionHandler.Instance.request_accepted_id = "";
         AuctionHandler.Instance.inAuction = false
+        
+        self.BuyerModeText.text = self.buyer_mode_text
     }
     
     func updateSellersLocation(lat: Double, long: Double) {

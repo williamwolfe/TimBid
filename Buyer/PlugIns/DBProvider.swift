@@ -70,14 +70,16 @@ class DBProvider {
     }
     
     
-    func saveUser(withID: String, email: String, password: String, rating: String, nRatings: Int) {
+    func saveUser(withID: String, email: String, password: String, rating: String, nRatings: Int, name: String, profileImageUrl: String) {
         let data: Dictionary<String, Any> =
             [Constants.EMAIL: email,
              Constants.PASSWORD: password,
              Constants.isSeller: false,
              Constants.RATING: rating,
-             Constants.N_RATINGS: 1];
-         buyersRef.child(withID).child(Constants.DATA).setValue(data);
+             Constants.N_RATINGS: 1,
+             Constants.NAME: name,
+             Constants.PROFILE_IMAGE: profileImageUrl];
+        buyersRef.child(withID).child(Constants.DATA).setValue(data);
         sellersRef.child(withID).child(Constants.DATA).setValue(data);
     }
     

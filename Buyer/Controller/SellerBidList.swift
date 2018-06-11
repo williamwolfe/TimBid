@@ -11,6 +11,7 @@ import CoreData
 import FirebaseDatabase
 
 class SellerBidList: UITableViewController {
+    var thisBuyerID = ""
     
     var bid_list = [NSManagedObject]()
     
@@ -90,7 +91,7 @@ class SellerBidList: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "bid_cell", for: indexPath) as! SellerBidCell
         
         let backgroundView = UIView()
-        backgroundView.backgroundColor = UIColor.green
+        backgroundView.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
         cell.selectedBackgroundView = backgroundView
         
         //cell.bidImage.image = UIImage(named: "sell.png")
@@ -163,6 +164,7 @@ class SellerBidList: UITableViewController {
         let item_price = bid_list[indexPath.row].value(forKey: "min_price") as? String
         let buyer_id = bid_list[indexPath.row].value(forKey: "buyer_id") as? String
         print("buyer id = \(String(describing: buyer_id))")
+        thisBuyerID = buyer_id!
         
         
         
@@ -197,8 +199,8 @@ class SellerBidList: UITableViewController {
             title: "Rate This Buyer",
             style: .default,
             handler: { (alertAction: UIAlertAction) in
-                print("Adding a rating for this buyer \(buyer_id!)")
-                self.rateThisBuyer(thisBuyerID: buyer_id!)
+                self.performSegue(withIdentifier: "SellerRatingBuyerSegue", sender: nil)
+                //self.rateThisBuyer(thisBuyerID: buyer_id!)
         });
         
         alert.addAction(accept);
@@ -207,6 +209,15 @@ class SellerBidList: UITableViewController {
         alert.addAction(cancel);
         present(alert, animated: true, completion: nil);
         
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        if segue.destination is SellerRatingBuyerVC
+        {
+            let vc = segue.destination as? SellerRatingBuyerVC
+            vc?.thisBuyerID = thisBuyerID
+        }
     }
     
     func rateThisBuyer(thisBuyerID: String) {

@@ -12,6 +12,7 @@ import CoreData
 
 class SaleVC: UITableViewController {
     
+    var thisSellerID = ""
     var offerings_list = [NSManagedObject]()
     
     @IBOutlet var myTableView: UITableView!
@@ -102,7 +103,7 @@ class SaleVC: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Sale", for: indexPath) as! Sale
         
         let backgroundView = UIView()
-        backgroundView.backgroundColor = UIColor.green
+        backgroundView.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
         cell.selectedBackgroundView = backgroundView
         
         //item description
@@ -176,7 +177,7 @@ class SaleVC: UITableViewController {
         let item_description = offerings_list[indexPath.row].value(forKey: "item_description") as? String
         let item_price = offerings_list[indexPath.row].value(forKey: "item_price") as? String
         let seller_identifier = offerings_list[indexPath.row].value(forKey: "seller_identifier") as? String
-        print("seller identifier = \(String(describing: seller_identifier))")
+        thisSellerID = seller_identifier!
         
         let alert = UIAlertController(
             title:      "Action On Row Item",
@@ -209,8 +210,7 @@ class SaleVC: UITableViewController {
             title: "Rate This Seller",
             style: .default,
             handler: { (alertAction: UIAlertAction) in
-                print("Adding a rating for this seller \(seller_identifier!)")
-                self.rateThisSeller(thisSellerID: seller_identifier!)
+                self.performSegue(withIdentifier: "RatingSegue", sender: nil)
                 
         });
         
@@ -220,86 +220,18 @@ class SaleVC: UITableViewController {
         alert.addAction(cancel);
         present(alert, animated: true, completion: nil);
         
-        
     }
     
-    func rateThisSeller(thisSellerID: String) {
-        var currentRating = ""
-        var nRatings = 1
-        
-        print("inside the rateThisSeller function, thisSellerID = \(thisSellerID)")
-        //use thisSellerID to get the current average rating and number of ratings.
-        //then pop up a request for the new rating: 1 - 5
-        //then compute the new average rating
-        //then update the seller record in Firebase
-        
-        DBProvider.Instance.sellersRef.child(thisSellerID).child("data").observeSingleEvent(of: .value, with: { (snapshot) in
-            let value = snapshot.value as? NSDictionary
-            if(value?["rating"] != nil) {
-                currentRating = value?["rating"] as? String ?? ""
-            } else {
-                currentRating = "4"
-            }
-    
-            if (value?["nRatings"]) != nil {
-                nRatings = value?["nRatings"] as! Int
-            } else {
-                nRatings = 1
-            }
-        
-        }) { (error) in print(error.localizedDescription) }
-        
-        //Now need a pop up to get the new rating.
-        //1. Create the alert controller.
-        let alert = UIAlertController(title: "Submit Rating", message: "Please enter a rating (1-5) for this Seller", preferredStyle: .alert)
-        //2. Add the text field.
-        alert.addTextField { (textField) in textField.text = "rating (1-5)" }
-        alert.addAction(UIAlertAction(title: "Enter Rating", style: .default, handler: {
-            [weak alert] (_) in
-            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
-            //let newRating = Int((textField?.text)!)
-            if (self.validateInput(x: (textField?.text)!)) {
-                let newRating = Int((textField?.text)!)
-                let updateRating = (Double(nRatings) * Double(currentRating)! + Double(newRating!) )/(Double(nRatings) + 1)
-                let updateNRatings = nRatings + 1
-    
-                DBProvider.Instance.sellersRef.child(thisSellerID).child("data").updateChildValues(["rating": String(updateRating)])
-                DBProvider.Instance.sellersRef.child(thisSellerID).child("data").updateChildValues(["nRatings": updateNRatings])
-                
-            } else {
-                print("input value could not be validated as between 1 and 5")
-                self.alertTheUser(title: "Ratings Input Error", message: "Rating must be an integer from 1 to 5")
-            }
-        }))
-        
-        let cancel = UIAlertAction(
-            title: "Cancel",
-            style: .default,
-            handler: { (alertAction: UIAlertAction) in
-                print("canceled the rating entry")
-        });
-        
-        alert.addAction(cancel);
-        
-        // 4. Present the alert.
-        self.present(alert, animated: true, completion: nil)
-        
-        
-        
-    }
-    
-    func validateInput(x: String) -> Bool {
-        if let intValue = Int(x) {
-            if (intValue >= 1 && intValue <= 5) {
-                return true
-            } else {
-                return false
-            }
-        } else {
-            return false
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        if segue.destination is RatingVC
+        {
+            let vc = segue.destination as? RatingVC
+            print("got into the prepar for segue")
+            vc?.thisSellerID = thisSellerID
         }
     }
-    
+ 
     func deleteRowFromItem(x: String, index: Int) {
         let context = getContext()
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")

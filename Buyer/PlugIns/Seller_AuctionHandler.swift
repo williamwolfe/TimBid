@@ -24,6 +24,7 @@ class Seller_AuctionHandler {
     weak var delegate: Seller_AuctionController?;
     var seller = "";
     var seller_id = "";
+    var name = "";
     var buyer = "";
     var buyer_id = "";
     var auction_request_id = "";

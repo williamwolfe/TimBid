@@ -8,6 +8,7 @@
 
 import Foundation
 import FirebaseAuth
+import Firebase
 import FBSDKLoginKit
 
 typealias LoginHandler = (_ msg: String?) -> Void;
@@ -36,18 +37,29 @@ class AuthProvider {
             if error != nil {
                 self.handleErrors(err: error! as NSError, loginHandler: loginHandler);
             } else {
-                self.user_id = user!.uid;
-                loginHandler?(nil);
-                let userID = self.userID()
-                AuctionHandler.Instance.buyer_id = userID;
-                Seller_AuctionHandler.Instance.seller_id = userID;
-            }
+                        self.user_id = user!.uid;
+                        loginHandler?(nil);
+                        let userID = self.userID()
+                        AuctionHandler.Instance.buyer_id = userID;
+                        Seller_AuctionHandler.Instance.seller_id = userID;
+                
+                        DBProvider.Instance.sellersRef.child("\(userID)/data/name").observeSingleEvent(of: .value) { (snapshot) in
+                                if (snapshot.value as? String) != nil {
+                                    AuctionHandler.Instance.name = snapshot.value as! String;
+                                    Seller_AuctionHandler.Instance.name = snapshot.value as! String;
+                                    
+                            } else {
+                                    AuctionHandler.Instance.name = "TIMBid Buyer"
+                                    Seller_AuctionHandler.Instance.name = "TIMBid Seller"
+                            }
+                        }
+                    }
             
         });
         
     } // login func
     
-    func signUp(withEmail: String, password: String, loginHandler: LoginHandler?) {
+    func signUp(withEmail: String, password: String, name: String, profileImage: UIImage, loginHandler: LoginHandler?) {
         
         Auth.auth().createUser(withEmail: withEmail, password: password, completion: { (user, error) in
             
@@ -58,20 +70,35 @@ class AuthProvider {
                 if user?.uid != nil {
                     self.user_id = user!.uid;
                     AuctionHandler.Instance.buyer_id = self.user_id
+                    //user is now authenticated
                     
-                    // store the user to database
-                    DBProvider.Instance.saveUser(withID: user!.uid, email: withEmail, password: password, rating: "4", nRatings: 1);
-                    
-                    // login the user
-                    self.login(withEmail: withEmail, password: password, loginHandler: loginHandler);
-                    
+                    //generate a unique string to name the image:
+                    let imageName = NSUUID().uuidString
+                    //define a reference on firebase, in the profile_images directory:
+                    let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).png")
+ 
+                    if let uploadData = UIImagePNGRepresentation(profileImage) {
+                       
+                        storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
+                            if let error = error {
+                                print(error)
+                                return
+                            }
+                            //get the image url from firebase storage, and store it in the users data on firebase:
+                            if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
+                                // store the user to database:
+                                DBProvider.Instance.saveUser(withID: user!.uid, email: withEmail, password: password, rating: "4", nRatings: 1, name: name, profileImageUrl: profileImageUrl);
+                                //log the user in:
+                                self.login(withEmail: withEmail, password: password, loginHandler: loginHandler);
+                        
+                            }
+                        })
+                    }
                 }
-                
             }
-            
-        });
+        })
+    }
         
-    } // sign up func
     
     func logOut() -> Bool {
         if Auth.auth().currentUser != nil {

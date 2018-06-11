@@ -20,6 +20,8 @@ class Constants {
     static let AUCTION_ACCEPTED = "Auction_Accepted"
     static let RATING = "rating"
     static let N_RATINGS = "nRatings"
+    static let PROFILE_IMAGE = "profileImageUrl"
+   
     
     static let ACCEPTED_BY = "accepted_by"
     static let BUYER_ID = "buyer_id"
