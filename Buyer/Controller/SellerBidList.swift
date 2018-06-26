@@ -32,6 +32,8 @@ class SellerBidList: UITableViewController {
         
         let context = getContext()
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "SellerBid")
+        let sort = NSSortDescriptor(key: "date", ascending: false)
+        request.sortDescriptors = [sort]
         request.returnsObjectsAsFaults = false
         
         do

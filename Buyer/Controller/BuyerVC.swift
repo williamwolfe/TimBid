@@ -21,6 +21,8 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     @IBOutlet weak var payBttnOutlet: UIButton!
     
     @IBOutlet weak var myMap: MKMapView!
+    
+    
     private var locationManager = CLLocationManager();
     private var userLocation: CLLocationCoordinate2D?;
     private var sellerLocation: CLLocationCoordinate2D?;
@@ -34,7 +36,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     
     private var  buyer_mode_text = "Welcome to the BUYER MODE of the TIMBid  App!  You can bid on items by clicking on the VIEW AUCTIONS button.  You will be notified if the seller accepts your bid.  Then you will see the seller's location on the MAP, a CHAT option will be enabled, a PAY button will facilitate payment, and a CANCEL button will allow you to cancel at any time.  To sell an item, switch to the SELLER MODE by clicking the icon on the bottom tab bar"
     
-    private var buyer_mode_in_auction_text = "You are currently participating in an Active Auction: hit CHAT to connect with the Seller, and hit PAY to complete the transaction.  Hit CANCEL to cancel this auction"
+    private var buyer_mode_in_auction_text = "Auction in Progress: Hit Chat to connect with the Seller, hit View Map to see where the Seller is, and hit Pay to complete the transaction.  Hit CANCEL to cancel this auction."
     
     private var delta = 0.01;
     //Here are some values for how delta will make to km or ft:
@@ -81,12 +83,19 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         myMap.showsUserLocation = true
 
         AuctionHandler.Instance.delegate = self;
+    
         
-        //AuctionHandler.Instance.observeMessagesForBuyer();
-        chatBttnOutlet.isHidden = true;
-        payBttnOutlet.isHidden = true;
         
-       
+        chatBttnOutlet.isEnabled = false
+        chatBttnOutlet.setTitleColor(UIColor.gray, for: .disabled)
+        chatBttnOutlet.backgroundColor = UIColor.lightGray
+        chatBttnOutlet.isHidden = false;
+        
+        payBttnOutlet.isEnabled = false
+        payBttnOutlet.setTitleColor(UIColor.gray, for: .disabled)
+        payBttnOutlet.backgroundColor = UIColor.lightGray
+        payBttnOutlet.isHidden = false;
+        
         BuyerModeText.text = buyer_mode_text
         
         printBuyerVariables()
@@ -171,6 +180,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         }
         
     }
+ 
 
     @IBAction func logout(_ sender: Any) {
         if acceptedAuction {
@@ -236,7 +246,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
                 AuctionHandler.Instance.seller = AuctionHandler.Instance.temp_seller
                 self.acceptedAuction = true;
                 self.acceptAuctionBtn.isHidden = false;
-                self.BuyerModeText.text = self.buyer_mode_in_auction_text
+                self.BuyerModeText.text = self.buyer_mode_in_auction_text + " Seller: \(AuctionHandler.Instance.seller).  Item: \(AuctionHandler.Instance.item_description).  Price: $\(Int(AuctionHandler.Instance.min_price)!/100)."
                 self.timer = Timer.scheduledTimer(timeInterval: TimeInterval(10), target: self, selector: #selector(BuyerVC.updateBuyersLocation), userInfo: nil, repeats: true);
                 
                 AuctionHandler.Instance.auctionAccepted(
@@ -332,29 +342,27 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     
     
     internal func enableChat() {
-        chatBttnOutlet.isHidden = false;
+        chatBttnOutlet.isEnabled = true
+        chatBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
     }
     
     internal func disableChat() {
-        chatBttnOutlet.isHidden = true;
+        chatBttnOutlet.isEnabled = false
+        chatBttnOutlet.setTitleColor(UIColor.gray, for: .disabled)
+        chatBttnOutlet.backgroundColor = UIColor.lightGray
     }
-    
-    /*
-    @IBAction func pay(_ sender: Any) {
-        performSegue(withIdentifier: PAY_SEGUE, sender: nil)
-    }*/
-    /*
-    @IBAction func backButton(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
-    }*/
+
     
     
     internal func enablePay() {
-        payBttnOutlet.isHidden = false;
+        payBttnOutlet.isEnabled = true
+        payBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
     }
     
     internal func disablePay() {
-        payBttnOutlet.isHidden = true;
+        payBttnOutlet.isEnabled = false
+        payBttnOutlet.setTitleColor(UIColor.gray, for: .disabled)
+        payBttnOutlet.backgroundColor = UIColor.lightGray
     }
     
     func addRecordToItem() {

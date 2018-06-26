@@ -48,13 +48,21 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
         callAuctionBtn.layer.shadowOpacity = 0.5
         callAuctionBtn.layer.shadowOffset = CGSize(width: 0, height: 0)
         
-        startChat.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1.0)
+        //startChat.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1.0)
         //startChat.layer.cornerRadius = startChat.frame.height/2
         startChat.layer.shadowColor = UIColor.darkGray.cgColor
         startChat.layer.shadowRadius = 4
         startChat.layer.shadowOpacity = 0.5
         startChat.layer.shadowOffset = CGSize(width: 0, height: 0)
-        startChat.isHidden = true;
+        
+        
+        
+        startChat.isEnabled = false
+        startChat.setTitleColor(UIColor.gray, for: .disabled)
+        startChat.backgroundColor = UIColor.lightGray
+        startChat.isHidden = false;
+        
+
         
         initializeLocationManager();
         myMap.showsUserLocation = true
@@ -145,10 +153,11 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
         }
         
     }
-    
+   
     @objc func updateSellersLocation() {
         Seller_AuctionHandler.Instance.updateSellerLocation(lat: userLocation!.latitude, long: userLocation!.longitude);
     }
+ 
     
     //This function is called by an "observer" function in Seller_AuctionHandler
     func canCallAuction(delegateCalled: Bool) {
@@ -181,7 +190,10 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
             MinPriceValue.isEnabled = true;
             SellSomething.text = "Describe what you want to sell:"
             canChat = false;
-            startChat.isHidden = true;
+            
+            //startChat.isHidden = true;
+            disableStartChat()
+            
             Seller_MessagesHandler.Instance.cancelChat();
             buyerLocation = nil;
             Seller_AuctionHandler.Instance.buyer = "";
@@ -197,16 +209,21 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
             if requestAccepted {
                 alertTheUser(title: "Auction Accepted", message: "\(buyerName) Accepted Your Auction Request")
                 canChat = true;
-                startChat.isHidden = false;
+                
+                enableStartChat()
+                //startChat.isHidden = false;
+                
                 SellSomething.text = "Found buyer: \(Seller_AuctionHandler.Instance.buyer)"
                 Seller_AuctionHandler.Instance.startListeningForPayment()
             } else { // Buyer canceled the auction
-                print("inside SellerVC: buyer canceled the auction")
                 Seller_AuctionHandler.Instance.buyer = "";
                 Seller_AuctionHandler.Instance.buyer_id = "";
                 Seller_AuctionHandler.Instance.amount_paid = ""
                 MinPriceLabel.text = "Price:"
-                startChat.isHidden = true;
+                
+                disableStartChat()
+                //startChat.isHidden = true;
+                
                 Seller_AuctionHandler.Instance.cancelAuction();//remove request (auction_request_id) from DB
                 timer.invalidate();
                 alertTheUser(title: "Auction Canceled", message: "\(buyerName) Canceled Auction Request")
@@ -228,7 +245,7 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
             message: "Buyer \(buyer) has paid $\(amountPaid!)")
         SellSomething.text = "\(buyer) paid $\(amountPaid!)"
     }
-    
+   
     func updateBuyersLocation(lat: Double, long: Double) {
         buyerLocation = CLLocationCoordinate2D(latitude: lat, longitude: long);
     }
@@ -362,10 +379,16 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
         }
     }
     
-    /*
-    @IBAction func GoToTableView(_ sender: Any) {
-        performSegue(withIdentifier: TABLE_VIEW_SEGUE, sender: nil)
-    }*/
+    internal func enableStartChat() {
+        startChat.isEnabled = true
+        startChat.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1.0)
+    }
+    
+    internal func disableStartChat() {
+        startChat.isEnabled = false
+        startChat.setTitleColor(UIColor.gray, for: .disabled)
+        startChat.backgroundColor = UIColor.lightGray
+    }
     
     private func alertTheUser(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert);

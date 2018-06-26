@@ -16,12 +16,9 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
     var paymentCardTextField: STPPaymentCardTextField! = nil
     var submitButton: UIButton! = nil
     
-   
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print("inside PayVC: auction handler min price = \(AuctionHandler.Instance.min_price)")
         if(AuctionHandler.Instance.amount_paid != "") {
             var amountPaid:Int? = Int(AuctionHandler.Instance.min_price)
             amountPaid = amountPaid!/100
@@ -72,9 +69,7 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
             
             let user_id = Auth.auth().currentUser!.uid
             //let user_id = DBProvider.Instance.dbRef.child("buyers").child(user!.uid)
-            print("Inside PayVC: user_id:\(user_id)")
-            print("Inside PayVC: stripeToken:\(stripeToken)")
-        
+           
             //Using the stripeToken.tokenId to write a "source" (card) to Firebase
            //   '/stripe_customers/{userId}/sources/{pushId}/token'
             DBProvider.Instance.dbRef.child("stripe_customers")
@@ -99,7 +94,6 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
     }
     
     func getAmount() -> Int {
-        print("charge amount is: \(AuctionHandler.Instance.min_price)")
         if let amount = Int(AuctionHandler.Instance.min_price) {
             return amount
         } else {

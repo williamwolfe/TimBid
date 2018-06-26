@@ -69,9 +69,13 @@ class SellerTableVC:   UIViewController, UITableViewDataSource, UITableViewDeleg
     
     
     override func viewWillAppear(_ animated: Bool) {
-        
+        print("got here view will apper in seller table VC")
         let context = getContext()
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "SellerItem")
+        
+        let sort = NSSortDescriptor(key: "post_date", ascending: false)
+        request.sortDescriptors = [sort]
+        
         request.returnsObjectsAsFaults = false
         
         do

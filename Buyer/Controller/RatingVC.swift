@@ -35,7 +35,6 @@ class RatingVC: UIViewController {
         super.viewDidLoad()
         
         self.title = "Rate This Seller"
-        print("thisSellerID = \(thisSellerID)")
         thisSellerIDLabel.text = thisSellerID
         thisRating.text = "3"
         

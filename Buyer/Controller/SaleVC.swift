@@ -8,6 +8,9 @@
 
 import UIKit
 import CoreData
+import Firebase
+import FirebaseStorage
+import FirebaseDatabase
 
 
 class SaleVC: UITableViewController {
@@ -29,8 +32,16 @@ class SaleVC: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         
+        //let request = Commit.createFetchRequest()
+        //let sort = NSSortDescriptor(key: "date", ascending: false)
+        //request.sortDescriptors = [sort]
+        
         let context = getContext()
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
+        
+        let sort = NSSortDescriptor(key: "post_date", ascending: false)
+        request.sortDescriptors = [sort]
+        
         request.returnsObjectsAsFaults = false
         
         do
@@ -128,20 +139,43 @@ class SaleVC: UITableViewController {
         ///////get rating and number of ratings for this seller_id:
         var currentRating = ""
         var nRatings = 1
+       
+        
         DBProvider.Instance.sellersRef.child(seller_id as! String).child("data").observeSingleEvent(of: .value, with: { (snapshot) in
                 let value = snapshot.value as? NSDictionary
-                if(value?["rating"] != nil) {
+            
+            if(value?["rating"] != nil) {
                     currentRating = value?["rating"] as? String ?? ""
                 } else {
                     currentRating = "4"
                 }
             
-                if (value?["nRatings"]) != nil {
+            if (value?["nRatings"]) != nil {
                     nRatings = value?["nRatings"] as! Int
                 } else {
                     nRatings = 1
                 }
-        
+            
+            if let profileImageUrl = value?["profileImageUrl"] {
+                cell.imageView?.loadImageUsingCacheWithUrlString(profileImageUrl as! String)
+                /*
+                let storageRef = Storage.storage().reference(forURL: profileImageUrl as! String)
+                storageRef.downloadURL(completion: { (url, error) in
+                    
+                   do {
+                        let data = try Data(contentsOf: url!)
+                        let image = UIImage(data: data as Data)
+                        cell.imageView?.image = image
+
+                    } catch {
+                        print(error)
+                    }
+                })
+                */
+                
+                
+            }
+            
                 let star_array: [UIButton] = [cell.star1, cell.star2, cell.star3, cell.star4, cell.star5]
             
                 var i = 0;
@@ -168,7 +202,19 @@ class SaleVC: UITableViewController {
                 }
             
         }) { (error) in print(error.localizedDescription) }
+        
+        if (cell.imageView?.image == nil) {
+             cell.imageView?.image = UIImage(named: "female_buyer")
+        }
        
+        cell.imageView?.layer.cornerRadius = (cell.imageView?.image?.size.width)!/2;
+        cell.imageView?.clipsToBounds = true
+        cell.imageView?.layer.borderWidth = 1.0;
+        cell.imageView?.layer.borderColor =  UIColor(red:222/255, green:225/255, blue:227/255, alpha: 1).cgColor
+        //cell.imageView?.contentMode = .scaleAspectFill
+        //cell.imageView?.translatesAutoresizingMaskIntoConstraints = false
+        //cell.imageView?.layer.masksToBounds = true
+        
         return cell
     }
     

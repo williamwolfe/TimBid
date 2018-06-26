@@ -200,11 +200,12 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     
     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "page_1")
+        imageView.image = UIImage(named: "female_buyer")
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
         imageView.isUserInteractionEnabled = true
+        //imageView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         return imageView
     }()
     
@@ -262,7 +263,8 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         
         let loginButton = FBSDKLoginButton()
         view.addSubview(loginButton)
-        loginButton.frame = CGRect(x: 54, y: 550, width: view.frame.width - 108, height: 36)
+        
+        loginButton.frame = CGRect(x: 54, y: 500, width: view.frame.width - 108, height: 36)
         
         loginButton.delegate = self
         loginButton.readPermissions = ["email", "public_profile"]
@@ -330,8 +332,11 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
         //need x, y, width, height constraints
         profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         profileImageView.bottomAnchor.constraint(equalTo: loginRegisterSegmentedControl.topAnchor, constant: -12).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        
+        profileImageView.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        //profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        //profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
     }
     
     var inputsContainerViewHeightAnchor: NSLayoutConstraint?
@@ -342,9 +347,15 @@ class LoginController: UIViewController, FBSDKLoginButtonDelegate {
     func setupInputsContainerView() {
         //need x, y, width, height constraints
         inputsContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        //inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        //inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        inputsContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150).isActive = true
+        
         inputsContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive = true
-        inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
+        //inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
+        inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 75)
         inputsContainerViewHeightAnchor?.isActive = true
         
         inputsContainerView.addSubview(nameTextField)
