@@ -90,11 +90,12 @@ class AuctionHandler {
                                                     BuyerStateVariables.Instance.temp_seller = String(describing: name as! String)
                                                     BuyerStateVariables.Instance.auction_key = snapshot.key
                                                     
+                                                    
                                                     //Third: check that the seller is withing the geographic area:
                                                     self.delegate?.checkProximity(lat: latitude,long: longitude, description: description as! String,
                                                         min_price: String(describing: min_price)
                                                     );
-                                                    
+ 
                                                     self.previous_child_added_id = self.child_added_id
                                                 } else {
                                                     print("ignore this new request, it is already taken by someone else")
@@ -249,7 +250,7 @@ class AuctionHandler {
         if (self.request_accepted_id != "") {
             DBProvider.Instance.requestAcceptedRef.child(self.request_accepted_id).removeValue();
         } else {
-            print("Auction Handler: request_accetped_id is the empty string")
+            print("Auction Handler: request_accepted_id is the empty string")
         }
         
         print("inside cancelAuctionForBuyer: just after remove requestAccepted")

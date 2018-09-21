@@ -16,11 +16,8 @@ class MyMapViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     @IBOutlet weak var myMap: MKMapView!
     
     private var locationManager = CLLocationManager();
-    //Note: This is for the Buyer mode: the current user is the buyer:
     private var userLocation: CLLocationCoordinate2D?;
     private var sellerLocation: CLLocationCoordinate2D?;
-    //For the Seller mode, use:
-    //private var buyerLocation: CLLocationCoordinate2D?;
     
     
     //Putting this in for now:
@@ -111,12 +108,6 @@ class MyMapViewController: UIViewController, MKMapViewDelegate, CLLocationManage
     //func updateBuyersLocation(lat: Double, long: Double) {
     //    buyerLocation = CLLocationCoordinate2D(latitude: lat, longitude: long);
     //}
-
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     @IBAction func backButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
@@ -128,6 +119,11 @@ class MyMapViewController: UIViewController, MKMapViewDelegate, CLLocationManage
         if let data = snapshot.value as? NSDictionary {
             if let lat = data[Constants.LATITUDE] as? Double {
                 if let long = data[Constants.LONGITUDE] as? Double {
+                    print("inside Buyer's MapView:request ref child changed")
+                    print("observing the request ref child changed:")
+                    print("seller's lat = \(lat)")
+                    print("seller's long = \(long)")
+                    
                     
                     self.updateSellersLocation(lat: lat, long: long);
                     //For Seller mode, use:

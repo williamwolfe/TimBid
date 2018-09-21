@@ -17,10 +17,7 @@ class SellerMapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegat
     @IBOutlet weak var myMap: MKMapView!
     
     private var locationManager = CLLocationManager();
-    //Note: This is for the Buyer mode: the current user is the buyer:
     private var userLocation: CLLocationCoordinate2D?;
-    //private var sellerLocation: CLLocationCoordinate2D?;
-    //For the Seller mode, use:
     private var buyerLocation: CLLocationCoordinate2D?;
     
     
@@ -37,6 +34,7 @@ class SellerMapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegat
         initializeLocationManager()
         // Suggested by Jared on video:
         //if CLLocationManager.locationServicesEnabled() {}
+        
         
     }
     
@@ -83,7 +81,7 @@ class SellerMapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegat
             }
             */
             //For Seller mode, use:
-          
+            print("Inside Seller Map View: buyerLocation = \(String(describing: buyerLocation))")
              if buyerLocation != nil {
                 if acceptedAuction {
                     let buyerAnnotation = MKPointAnnotation();
@@ -112,24 +110,23 @@ class SellerMapVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegat
     
     //For Seller mode, use:
     func updateBuyersLocation(lat: Double, long: Double) {
+        print("inside Seller's MapView: updateBuyersLocation")
+        print("buyer lat = \(lat)")
+        print("buyer long = \(long)")
         buyerLocation = CLLocationCoordinate2D(latitude: lat, longitude: long);
     }
     
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    
     func observeMessagesForMyMap() {
         
-        DBProvider.Instance.requestRef.observe(DataEventType.childChanged) { (snapshot: DataSnapshot) in
+        DBProvider.Instance.requestAcceptedRef.observe(DataEventType.childChanged) { (snapshot: DataSnapshot) in
             if let data = snapshot.value as? NSDictionary {
                 if let lat = data[Constants.LATITUDE] as? Double {
                     if let long = data[Constants.LONGITUDE] as? Double {
-                        
+                        print("inside Seller's MapView:request ref child changed")
+                        print("observing the request accepted ref child changed:")
+                        print("buyer's lat = \(lat)")
+                        print("buyer's long = \(long)")
                         //self.updateSellersLocation(lat: lat, long: long);
                         //For Seller mode, use:
                         self.updateBuyersLocation(lat: lat, long: long);

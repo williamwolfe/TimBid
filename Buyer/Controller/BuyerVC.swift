@@ -21,12 +21,9 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     @IBOutlet weak var payBttnOutlet: UIButton!
     
     @IBOutlet weak var myMap: MKMapView!
-    
-    
     private var locationManager = CLLocationManager();
     private var userLocation: CLLocationCoordinate2D?;
     private var sellerLocation: CLLocationCoordinate2D?;
-    
     private var timer = Timer();
     
     private var acceptedAuction         = false;
@@ -45,64 +42,48 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     //.0050 --> 1.0 km = 3280 ft
     //.0100 --> 2.0 km
     
+    var items: [NSManagedObject] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //self.tabBarController?.tabBar.isHidden = false
         
-        //chatBttnOutlet.layer.cornerRadius = 4
-        //acceptAuctionBtn.layer.cornerRadius = 4
-        //payBttnOutlet.layer.cornerRadius = 4
+        initializeLocationManager();
+        myMap.showsUserLocation = true
+        AuctionHandler.Instance.delegate = self;
+        BuyerModeText.text = buyer_mode_text
         
-        //chatBttnOutlet.backgroundColor = UIColor.jsq_messageBubbleBlue()
-        //chatBttnOutlet.backgroundColor = UIColor(red: 80/255, green: 161/255, blue: 101/255, alpha: 1)
         chatBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
-        //chatBttnOutlet.layer.cornerRadius = chatBttnOutlet.frame.height/2
         chatBttnOutlet.layer.shadowColor = UIColor.darkGray.cgColor
         chatBttnOutlet.layer.shadowRadius = 4
         chatBttnOutlet.layer.shadowOpacity = 0.5
         chatBttnOutlet.layer.shadowOffset = CGSize(width: 0, height: 0)
         
-        //acceptAuctionBtn.backgroundColor = UIColor(red: 80/255, green: 161/255, blue: 101/255, alpha: 1)
         acceptAuctionBtn.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
-        //acceptAuctionBtn.layer.cornerRadius = acceptAuctionBtn.frame.height/2
         acceptAuctionBtn.layer.shadowColor = UIColor.darkGray.cgColor
         acceptAuctionBtn.layer.shadowRadius = 4
         acceptAuctionBtn.layer.shadowOpacity = 0.5
         acceptAuctionBtn.layer.shadowOffset = CGSize(width: 0, height: 0)
-        //acceptAuctionBtn.setTitleColor(UIColor(red: 200/255, green: 20/255, blue: 20/255, alpha: 1), for: .normal)
-        
-        //payBttnOutlet.backgroundColor = UIColor(red: 80/255, green: 161/255, blue: 101/255, alpha: 1)
+       
         payBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
-        //payBttnOutlet.layer.cornerRadius = payBttnOutlet.frame.height/2
         payBttnOutlet.layer.shadowColor = UIColor.darkGray.cgColor
         payBttnOutlet.layer.shadowRadius = 4
         payBttnOutlet.layer.shadowOpacity = 0.5
         payBttnOutlet.layer.shadowOffset = CGSize(width: 0, height: 0)
         
-        initializeLocationManager();
-        myMap.showsUserLocation = true
-
-        AuctionHandler.Instance.delegate = self;
-    
-        
-        
         chatBttnOutlet.isEnabled = false
         chatBttnOutlet.setTitleColor(UIColor.gray, for: .disabled)
         chatBttnOutlet.backgroundColor = UIColor.lightGray
+        chatBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 0.3)
         chatBttnOutlet.isHidden = false;
         
         payBttnOutlet.isEnabled = false
         payBttnOutlet.setTitleColor(UIColor.gray, for: .disabled)
-        payBttnOutlet.backgroundColor = UIColor.lightGray
+        payBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 0.3)
         payBttnOutlet.isHidden = false;
-        
-        BuyerModeText.text = buyer_mode_text
         
         printBuyerVariables()
         
     }
-    
-    
     
     func printBuyerVariables() {
         
@@ -132,13 +113,6 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         
     }
     
-    /*
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        //DBProvider.Instance.dbRef.removeAllObservers()
-    }
- */
     
     private func initializeLocationManager() {
         locationManager.delegate = self;
@@ -158,11 +132,9 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
                 span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005));
             
             myMap.setRegion(region, animated: true);
-            
             myMap.removeAnnotations(myMap.annotations);
             
             if sellerLocation != nil {
-                print("insider buyer VC, seller location is not nil")
                 if acceptedAuction {
                     let sellerAnnotation = MKPointAnnotation();
                     sellerAnnotation.coordinate = sellerLocation!;
@@ -200,9 +172,8 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     
     func checkProximity(lat: Double, long: Double, description: String, min_price: String) {
 
-        if nearby(lat: lat, long: long) && !acceptedAuction
+    if nearby(lat: lat, long: long) && !acceptedAuction
         {
-            
             addRecordToItem()
             presentAcceptRejectOption(
                     title:          "Auction Request",
@@ -217,6 +188,8 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     func nearby(lat: Double, long: Double) -> Bool {
         //"delta" is a global variable
         if userLocation != nil {
+            return true
+            /*
             if  (lat  <= self.userLocation!.latitude + delta)   && (lat  >= self.userLocation!.latitude - delta)
                 &&
                 (long <= self.userLocation!.longitude + delta)  && (long >= self.userLocation!.longitude - delta)
@@ -226,6 +199,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
             {
                 return false
             }
+            */
         } else {
             print("missing location information")
             return false
@@ -271,6 +245,8 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     
     func sellerCanceledAuction() {
         if !buyerCanceledAuction {
+            updateStatus(status: "2")
+            
             AuctionHandler.Instance.cancelAuctionForBuyer(); //removes requestAccepted (buyer_id) item from DB
             self.acceptedAuction = false;
             self.acceptAuctionBtn.isHidden = true;
@@ -295,11 +271,44 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         //this only happened after a couple of cycles of request/accepted/cancels etc:
         buyerCanceledAuction = false
     }
+    func getContext() -> NSManagedObjectContext  {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        return context
+    }
     
     func auctionCanceled() {
+        updateStatus(status: "2")
         rejectAuction()
         buyerCanceledAuction = false;
         timer.invalidate();
+    }
+    
+    func updateStatus(status: String) {
+        let context = getContext()
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
+        request.returnsObjectsAsFaults = false
+        do {
+            let results = try context.fetch(request)
+            if results.count > 0 {
+                for result in results as! [NSManagedObject] {
+                    if let item_description = result.value(forKey: "item_description") as? String {
+                        if item_description == AuctionHandler.Instance.item_description {
+                            if let min_price = result.value(forKey: "item_price") as? String{
+                                if min_price == AuctionHandler.Instance.min_price {
+                                    if(result.value(forKey: "status") as? String != "0") {
+                                        result.setValue(status, forKey: "status")
+                                        do { try context.save() } catch {print("9999 error trying to save to core data") }
+                                    }
+                                }
+                            }
+                            
+                            
+                        }
+                    }
+                }
+            }
+        } catch { print("error getting Item data in auctionCanceled") }
     }
     
     private func rejectAuction() {
@@ -317,12 +326,13 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         AuctionHandler.Instance.inAuction = false
         
         self.BuyerModeText.text = self.buyer_mode_text
+        
+        
     }
     
     func updateSellersLocation(lat: Double, long: Double) {
+        print("updating seller's location (inside BuyerVC)")
         sellerLocation = CLLocationCoordinate2D(latitude: lat, longitude: long);
-        
-        print("inside BuyerVC: (updating sellers location) seller =\(AuctionHandler.Instance.seller) ")
     }
     
     @objc func updateBuyersLocation() {
@@ -340,10 +350,10 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     }
     
     
-    
     internal func enableChat() {
         chatBttnOutlet.isEnabled = true
         chatBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
+        updateStatus(status: "3")
     }
     
     internal func disableChat() {
@@ -357,6 +367,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
     internal func enablePay() {
         payBttnOutlet.isEnabled = true
         payBttnOutlet.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1)
+        
     }
     
     internal func disablePay() {
@@ -374,6 +385,7 @@ class BuyerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, A
         newItem.setValue(AuctionHandler.Instance.seller_id, forKey: "seller_identifier")
         newItem.setValue(Date(), forKey: "post_date")
         newItem.setValue(Date(), forKey: "purchase_date") //should fix this, the item is not sold yet. date should be nil
+        newItem.setValue("1", forKey: "status") //"1" means "open for bids"
         do
         {
             try context.save()

@@ -132,10 +132,13 @@ class SaleVC: UITableViewController {
         
         cell.myAmount.text = "$" + String(amount!)
         
-        // item post date
-        //let d = offerings_list[indexPath.row]
-        cell.myDate?.text = String(String(describing: x.value(forKey: "post_date")!).prefix(19))
-       
+        
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "MMM dd,yyyy"
+        cell.myDate?.text = dateFormatterPrint.string(from: x.value(forKey: "post_date") as! Date)
+        /////////////////////////////////
+        
+        
         ///////get rating and number of ratings for this seller_id:
         var currentRating = ""
         var nRatings = 1
@@ -214,6 +217,43 @@ class SaleVC: UITableViewController {
         //cell.imageView?.contentMode = .scaleAspectFill
         //cell.imageView?.translatesAutoresizingMaskIntoConstraints = false
         //cell.imageView?.layer.masksToBounds = true
+        
+        //green_circle_check: bought by buyer: 0
+        //red_x: buyer not interested, rejected the auction first time it showed up: 1
+        //green_open: buyer accepted the auction, but it was ultimately canceled by buyer or seller: 2
+        //blue_pause: in the negotiation phase, pending: 3
+        
+        ///print("8888 status = \(String(describing: Int(x.value(forKey: "status") as! String) ))")
+
+        if (x.value(forKey: "status") != nil) {
+            if let myInt = Int(x.value(forKey: "status") as! String) {
+               
+                switch myInt {
+                case 0:
+                    cell.statusImage.image = UIImage(named: "green_circle_check")
+                    
+                case 1:
+                    cell.statusImage.image = UIImage(named: "red_x_transparent")
+                    
+                case 2:
+                    cell.statusImage.image = UIImage(named: "green_open_transparent")
+                    
+                case 3:
+                    cell.statusImage.image = UIImage(named: "blue_pause")
+                    
+                default:
+                    
+                    cell.statusImage.image = UIImage(named: "green_open_transparent")
+                }
+            }  else {
+                cell.statusImage.image = UIImage(named: "green_open_transparent")
+            }
+        } else {
+             cell.statusImage.image = UIImage(named: "green_open_transparent")
+        }
+ 
+        print("status = \(String(describing: x.value(forKey: "status") ))")
+        //cell.statusImage.image = UIImage(named: "green_open_transparent")
         
         return cell
     }

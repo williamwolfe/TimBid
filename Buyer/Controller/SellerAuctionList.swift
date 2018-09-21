@@ -55,10 +55,14 @@ class SellerAuctionList: UITableViewController {
         
         // item post date
         //let d = offerings_list[indexPath.row]
-        print("Trying to print the post date: \(x.value(forKey: "post_date")!)")
+        //print("Trying to print the post date: \(x.value(forKey: "post_date")!)")
         //cell.myDate?.text = String(describing: d.value(forKey: "post_date")!)
-        let shorter_date  = String(describing: x.value(forKey: "post_date")!).prefix(19)
-        cell.myDate?.text = String(shorter_date)
+        //let shorter_date  = String(describing: x.value(forKey: "post_date")!).prefix(19)
+        //cell.myDate?.text = String(shorter_date)
+        
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "MMM dd,yyyy"
+        cell.myDate?.text = dateFormatterPrint.string(from: x.value(forKey: "post_date") as! Date)
         
         return cell
     }

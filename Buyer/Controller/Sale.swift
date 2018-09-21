@@ -10,7 +10,8 @@ import UIKit
 
 class Sale: UITableViewCell {
 
-   
+    @IBOutlet weak var statusImage: UIImageView!
+    
     @IBOutlet weak var myAmount: UILabel!
     @IBOutlet weak var myLabel: UILabel!
     @IBOutlet weak var myDate: UILabel!

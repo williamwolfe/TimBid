@@ -19,7 +19,6 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
     private var locationManager = CLLocationManager();
     private var userLocation: CLLocationCoordinate2D?;
     private var buyerLocation: CLLocationCoordinate2D?;
-    
     private var timer = Timer();
     
     private var canCallAuction = true;
@@ -39,46 +38,37 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //callAuctionBtn.backgroundColor = UIColor.jsq_messageBubbleGreen()
-        //callAuctionBtn.backgroundColor = UIColor(red: 80/255, green: 161/255, blue: 101/255, alpha: 1.0)
-        callAuctionBtn.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1.0)
-        //callAuctionBtn.layer.cornerRadius = callAuctionBtn.frame.height/2
-        callAuctionBtn.layer.shadowColor = UIColor.darkGray.cgColor
-        callAuctionBtn.layer.shadowRadius = 4
-        callAuctionBtn.layer.shadowOpacity = 0.5
-        callAuctionBtn.layer.shadowOffset = CGSize(width: 0, height: 0)
-        
-        //startChat.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1.0)
-        //startChat.layer.cornerRadius = startChat.frame.height/2
-        startChat.layer.shadowColor = UIColor.darkGray.cgColor
-        startChat.layer.shadowRadius = 4
-        startChat.layer.shadowOpacity = 0.5
-        startChat.layer.shadowOffset = CGSize(width: 0, height: 0)
-        
-        
-        
-        startChat.isEnabled = false
-        startChat.setTitleColor(UIColor.gray, for: .disabled)
-        startChat.backgroundColor = UIColor.lightGray
-        startChat.isHidden = false;
-        
-
-        
         initializeLocationManager();
         myMap.showsUserLocation = true
-        
         Seller_AuctionHandler.Instance.delegate = self;
         Seller_AuctionHandler.Instance.min_price_cents = "";
-        
-        printSellerVariables()
         self.title = ""
         if (Seller_AuctionHandler.Instance.name != "") {
             self.title = Seller_AuctionHandler.Instance.name
         } else  {
             self.title = "TIMBid Seller"
         }
-
         
+       
+        callAuctionBtn.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 1.0)
+        callAuctionBtn.layer.shadowColor = UIColor.darkGray.cgColor
+        callAuctionBtn.layer.shadowRadius = 4
+        callAuctionBtn.layer.shadowOpacity = 0.5
+        callAuctionBtn.layer.shadowOffset = CGSize(width: 0, height: 0)
+        
+        startChat.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 0.3)
+        startChat.layer.shadowColor = UIColor.darkGray.cgColor
+        startChat.layer.shadowRadius = 4
+        startChat.layer.shadowOpacity = 0.5
+        startChat.layer.shadowOffset = CGSize(width: 0, height: 0)
+        
+        startChat.isEnabled = false
+        startChat.setTitleColor(UIColor.gray, for: .disabled)
+        startChat.backgroundColor = UIColor(red: 67/255, green: 96/255, blue: 179/255, alpha: 0.3)
+        startChat.isHidden = false;
+        
+        printSellerVariables()
+
     }
     
     func printSellerVariables() {
@@ -153,6 +143,12 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
         }
         
     }
+    
+    func updateBuyersLocation(lat: Double, long: Double) {
+        print("updating the buyer's location (inside SellerVC)")
+        buyerLocation = CLLocationCoordinate2D(latitude: lat, longitude: long);
+    }
+    
    
     @objc func updateSellersLocation() {
         Seller_AuctionHandler.Instance.updateSellerLocation(lat: userLocation!.latitude, long: userLocation!.longitude);
@@ -209,10 +205,7 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
             if requestAccepted {
                 alertTheUser(title: "Auction Accepted", message: "\(buyerName) Accepted Your Auction Request")
                 canChat = true;
-                
                 enableStartChat()
-                //startChat.isHidden = false;
-                
                 SellSomething.text = "Found buyer: \(Seller_AuctionHandler.Instance.buyer)"
                 Seller_AuctionHandler.Instance.startListeningForPayment()
             } else { // Buyer canceled the auction
@@ -222,7 +215,6 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
                 MinPriceLabel.text = "Price:"
                 
                 disableStartChat()
-                //startChat.isHidden = true;
                 
                 Seller_AuctionHandler.Instance.cancelAuction();//remove request (auction_request_id) from DB
                 timer.invalidate();
@@ -246,9 +238,7 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
         SellSomething.text = "\(buyer) paid $\(amountPaid!)"
     }
    
-    func updateBuyersLocation(lat: Double, long: Double) {
-        buyerLocation = CLLocationCoordinate2D(latitude: lat, longitude: long);
-    }
+   
     
     @IBAction func Minus5(_ sender: Any) {
         var price  = Int(MinPriceValue.text!)!;
@@ -299,21 +289,7 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
                     description: DescribeThing.text!,
                     min_price_cents: min_price_cents,
                     accepted_by: "no_one")
-                ////////////////////////////////////////////////
-                /*
-                Seller_AuctionHandler.Instance.test()
-                let data: Dictionary<String, Any> =
-                    [Constants.NAME: Seller_AuctionHandler.Instance.seller,
-                     Constants.DESCRIPTION: DescribeThing.text!,
-                     Constants.MIN_PRICE: min_price_cents,
-                     Constants.ACCEPTED_BY: "no one",
-                     Constants.BUYER_ID: Seller_AuctionHandler.Instance.buyer_id,
-                     Constants.SELLER_ID: Seller_AuctionHandler.Instance.seller_id,
-                     Constants.LATITUDE: Double(userLocation!.latitude),
-                     Constants.LONGITUDE: Double(userLocation!.longitude)]
-                DBProvider.Instance.requestRef.childByAutoId().setValue(data);
-                */
-                /////////////////////////////////////////////////////
+    
                 
                 timer = Timer.scheduledTimer(timeInterval: TimeInterval(10), target: self, selector: #selector(SellerVC.updateSellersLocation), userInfo: nil, repeats: true);
                 callAuctionBtn.setTitleColor(.black, for: .normal)
@@ -353,18 +329,6 @@ class SellerVC: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, 
         return 0
     }
     
-/*
-    @IBAction func backButton(_ sender: Any) {
-        print("got into the backButton action")
-        if !canCallAuction {
-            Seller_AuctionHandler.Instance.cancelAuction()
-            buyerLocation = nil;
-            MinPriceLabel.text = "min price:"
-            timer.invalidate();
-        }
-        dismiss(animated: true, completion: nil)
-    }
-*/
     
     @IBAction func logout(_ sender: Any) {
         if !canCallAuction {

@@ -28,7 +28,7 @@
                                     <constraint firstAttribute="height" constant="140" id="lxe-Sw-fTj"/>
                                 </constraints>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hand_money" translatesAutoresizingMaskIntoConstraints="NO" id="sPz-vG-9du">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hand_money_transparent" translatesAutoresizingMaskIntoConstraints="NO" id="sPz-vG-9du">
                                 <rect key="frame" x="155" y="305" width="64" height="56"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -52,7 +52,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="hand_money" width="39" height="30"/>
+        <image name="hand_money_transparent" width="39" height="30"/>
         <image name="page_1" width="300" height="110"/>
     </resources>
 </document>

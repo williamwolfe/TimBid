@@ -139,6 +139,7 @@ class Seller_AuctionHandler {
             print("inside Seller: observe requestAccepted, childChanged")
             if let data = snapshot.value as? NSDictionary {
                 if let name = data[Constants.NAME] as? String {
+                    print("name = \(name)")
                     if name == self.buyer {
                         if let lat = data[Constants.LATITUDE] as? Double {
                             if let long = data[Constants.LONGITUDE] as? Double {
@@ -255,6 +256,7 @@ class Seller_AuctionHandler {
     func updateSellerLocation(lat: Double, long: Double) {
         DBProvider.Instance.requestRef.child(auction_request_id).updateChildValues([Constants.LATITUDE: lat, Constants.LONGITUDE: long]);
     }
+    
     func test() {
         print("I am a test function in seller_auctionHandler")
     }

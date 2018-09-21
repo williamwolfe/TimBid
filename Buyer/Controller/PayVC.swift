@@ -10,11 +10,14 @@ import UIKit
 import Stripe
 import FirebaseDatabase
 import FirebaseAuth
+import CoreData
 
 class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
     
     var paymentCardTextField: STPPaymentCardTextField! = nil
     var submitButton: UIButton! = nil
+    
+     var items: [NSManagedObject] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -109,8 +112,8 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
     }*/
     
     func buyerPaid() {
+        updateBoughtStatus()
         AuctionHandler.Instance.amount_paid = AuctionHandler.Instance.min_price
-        
         let buyer = AuctionHandler.Instance.buyer
         var amountPaid:Int? = Int(AuctionHandler.Instance.min_price)
         amountPaid = amountPaid!/100
@@ -119,9 +122,9 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
             title: "Payment",
             message: "Buyer \(buyer) has paid $\(amountPaid!)")
         submitButton.isEnabled = false
-        payment.text = "Paid $\(amountPaid!) - Thank You!"
+        payment.text = "Paid $\(amountPaid!) for \(AuctionHandler.Instance.item_description)- Thank You!"
         payment2.text = "Show this to the Seller to confirm payment."
-        //payBttnOutlet.isHidden = true
+       
     }
     
     func paymentFailed(message: String) {
@@ -139,6 +142,39 @@ class PayVC: UIViewController, STPPaymentCardTextFieldDelegate, PayController  {
         alert.addAction(ok);
         present(alert, animated: true, completion: nil);
     }
+    
+    func getContext() -> NSManagedObjectContext  {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        return context
+    }
+    
+    func updateBoughtStatus() {
+        let context = getContext()
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
+        request.returnsObjectsAsFaults = false
+        do {
+            let results = try context.fetch(request)
+            if results.count > 0 {
+                for result in results as! [NSManagedObject] {
+                    if let item_description = result.value(forKey: "item_description") as? String {
+                        if item_description == AuctionHandler.Instance.item_description {
+                            if let item_price = result.value(forKey: "item_price") as? String {
+                                if item_price == AuctionHandler.Instance.min_price {
+                                    print("found a result with this item description:\(item_description)")
+                                    result.setValue("0", forKey: "status")
+                                    do { try context.save() } catch {print("bought status update  error trying to save to core data") }
+                                }
+                               
+                            }
+                           
+                        }
+                    }
+                }
+            }
+        } catch { print("error getting Item data in auctionCanceled") }
+    }
+    
     
 
 }

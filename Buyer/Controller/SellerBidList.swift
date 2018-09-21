@@ -105,14 +105,20 @@ class SellerBidList: UITableViewController {
         
         let price = x.value(forKey: "min_price") as? String
         let price_cents = Int(price!)!/100
-        let buyer_name = x.value(forKey: "buyer_name") as? String
+        //let buyer_name = x.value(forKey: "buyer_name") as? String
         //cell.amount?.text = "$" + String(price_cents) + " " + buyer_name!
         cell.amount?.text = "$" + String(price_cents)
         
         let buyer_id = x.value(forKey: "buyer_id")
+        
+        
         // item post date
-        let shorter_date  = String(describing: x.value(forKey: "date")!).prefix(19)
-        cell.date?.text = String(shorter_date)
+        //let shorter_date  = String(describing: x.value(forKey: "date")!).prefix(19)
+        //cell.date?.text = String(shorter_date)
+        
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "MMM dd,yyyy"
+        cell.date?.text = dateFormatterPrint.string(from: x.value(forKey: "date") as! Date)
         
         ///////get rating and number of ratings for this buyer_id:
         var currentRating = ""
